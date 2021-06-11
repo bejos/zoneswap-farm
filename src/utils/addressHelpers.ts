@@ -12,6 +12,9 @@ export const getAddress = (address: Address, chainId?: string): string => {
 export const getLuckyDrawAddress = () => {
   return getAddress(addresses.luckyDraw)
 }
+export const getAirdropAddress = () => {
+  return getAddress(addresses.airdrop)
+}
 export const getPresaleAddress = () => {
   return getAddress(addresses.presale)
 }

@@ -1,6 +1,10 @@
 export default {
   presale: {
     97: '0x8214933E32EaAbB016BE30A1809AA419537fD1cF',
+    56: '0x3f220e0329f3562e5CE59c8f72aC6a72bFe2E519',
+  },
+  airdrop: {
+    97: '0x8214933E32EaAbB016BE30A1809AA419537fD1cF',
     56: '0x2c13bB2bF2D62AfE8A9086c4c19c459822C9088D',
   },
   luckyDraw: {

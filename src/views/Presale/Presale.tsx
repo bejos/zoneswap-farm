@@ -8,10 +8,10 @@ import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import useTokenBalance, { useGetBnbBalance } from 'hooks/useTokenBalance'
 import { getFullDisplayBalance } from 'utils/formatBalance'
-import { getPresaleContract, getBep20Contract } from 'utils/contractHelpers'
+import { getPresaleContract, getBep20Contract, getAirdropContract } from 'utils/contractHelpers'
 import { BIG_ZERO } from 'utils/bigNumber'
 import multicall from 'utils/multicall'
-import { getPresaleAddress, getAddress } from 'utils/addressHelpers'
+import { getPresaleAddress, getAddress, getAirdropAddress } from 'utils/addressHelpers'
 import useToast from 'hooks/useToast'
 import useWeb3 from 'hooks/useWeb3'
 import { useBlock } from 'state/hooks'
@@ -101,7 +101,6 @@ const Presale: React.FC = () => {
   const [countdown, setCountdown] = useState('00:00:00')
   const [yourGouda, setYourGouda] = useState('0,00')
   const [isClaimed, setIsClaimed] = useState(false)
-  const [presaleToken, setPresaleToken] = useState('0')
   const [remainingToken, setRemainingToken] = useState('0')
   const [bnbPending, setBnbPending] = useState(false)
   const [busdPending, setBusdPending] = useState(false)
@@ -117,6 +116,12 @@ const Presale: React.FC = () => {
   const presaleContract = useMemo(() => {
     return getPresaleContract(presaleAddress, web3)
   }, [presaleAddress, web3])
+
+  const airdropAddress = getAirdropAddress()
+
+  const airdropContract = useMemo(() => {
+    return getAirdropContract(airdropAddress, web3)
+  }, [airdropAddress, web3]) 
 
   const busdContract = useMemo(() => {
     return getBep20Contract(getAddress(tokens.busd.address), web3)
@@ -192,17 +197,7 @@ const Presale: React.FC = () => {
         multicall(presaleAbi, [
           {
             address: presaleAddress,
-            name: 'getRemainingToken',
-            params: [],
-          },
-          {
-            address: presaleAddress,
-            name: 'presaleLocking',
-            params: [],
-          },
-          {
-            address: presaleAddress,
-            name: 'remainAirdrop',
+            name: 'getRemainPresale',
             params: [],
           },
           {
@@ -215,11 +210,9 @@ const Presale: React.FC = () => {
             name: 'unlockPresaleBlock',
             params: [],
           }
-        ]).then(([presaleTotal, presaleLocked, remainAirdrop, boughtGouda, blockToUnblock]) => {
-          const tokenLeft = new BigNumber(presaleTotal)
-            .minus(new BigNumber(presaleLocked)).minus(new BigNumber(remainAirdrop)).div(DEFAULT_TOKEN_DECIMAL)
-  
-          setPresaleToken(new BigNumber(presaleTotal).minus(new BigNumber(remainAirdrop)).div(DEFAULT_TOKEN_DECIMAL).toNumber().toLocaleString('en-US', { maximumFractionDigits: 2 }))
+        ]).then(([presaleTotal, boughtGouda, blockToUnblock]) => {
+          const tokenLeft = new BigNumber(presaleTotal).div(DEFAULT_TOKEN_DECIMAL)
+
           setRemainingToken(tokenLeft.toNumber().toLocaleString('en-US', { maximumFractionDigits: 0 }))
           setYourGouda(new BigNumber(boughtGouda).div(DEFAULT_TOKEN_DECIMAL).toNumber().toLocaleString('en-US', { maximumFractionDigits: 2 }))
           setUnlockedBlocknumber(new BigNumber(blockToUnblock).toString())
@@ -320,9 +313,9 @@ const Presale: React.FC = () => {
   const handleClaimAirdrop = useCallback(async() => {
     setClaiming(true)
     try {
-      await presaleContract.methods
+      await airdropContract.methods
         .claim()
-        .send({ from: account, gas: 200000, to: presaleAddress })
+        .send({ from: account, gas: 200000, to: airdropAddress })
         .on('transactionHash', (tx) => {
           return tx.transactionHash
         })
@@ -335,7 +328,7 @@ const Presale: React.FC = () => {
       toastError('Canceled', 'Please try again and confirm the transaction.')
       setClaiming(false)
     }
-  }, [presaleContract, account, toastError, toastSuccess, presaleAddress])
+  }, [airdropContract, account, toastError, toastSuccess, airdropAddress])
 
   const claimAction = useMemo(() => {
     if (isClaimed) {
@@ -359,7 +352,7 @@ const Presale: React.FC = () => {
               Gouda address
             </LinkExternal>
             <p style={{ fontSize: 20, color: '#323063', marginTop: 15, textAlign: "left" }}>
-              Total: <span style={{ fontSize: 30 }}>{presaleToken}</span> Gouda
+              Total: <span style={{ fontSize: 30 }}>3,000,000</span> Gouda
             </p>
             <p style={{ fontSize: 20, color: '#323063', marginTop: 15, textAlign: "left" }}>
               Remaining: <span style={{ fontSize: 30 }}>{remainingToken}</span> Gouda
