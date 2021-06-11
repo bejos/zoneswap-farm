@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { useAppDispatch } from 'state'
+import{ masterPids } from 'config/constants/pools'
 import {
   fetchFarmUserDataAsync,
   updateUserStakedBalance,
@@ -38,8 +39,8 @@ export const useSousUnstake = (sousId) => {
 
   const handleUnstake = useCallback(
     async (amount: string, decimals: number) => {
-      if (sousId === 0) {
-        const txHash = await unstake(masterChefContract, 0, amount, account)
+      if (masterPids.includes(sousId)) {
+        const txHash = await unstake(masterChefContract, sousId, amount, account)
         console.info(txHash)
       } else if (isOldSyrup) {
         const txHash = await sousEmergencyUnstake(sousChefContract, amount, account)

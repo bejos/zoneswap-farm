@@ -8,6 +8,8 @@ import { getAddress, getMasterChefAddress } from 'utils/addressHelpers'
 import { getWeb3NoAccount } from 'utils/web3'
 import BigNumber from 'bignumber.js'
 
+const [, presalePid] = masterPids
+
 // Pool 0, Cake / Cake is a different kind of contract (master chef)
 // BNB pools use the native BNB token (wrapping ? unwrapping is done at the contract level)
 const nonBnbPools = poolsConfig.filter((p) => p.stakingToken.symbol !== 'BNB')
@@ -73,12 +75,12 @@ export const fetchUserStakeBalances = async (account) => {
   const { amount: masterPoolAmount } = await masterChefContract.methods.userInfo('0', account).call()
 
   // Preasle / Gouda pool
-  const { amount: masterPresalePoolAmount } = await masterChefContract.methods.userInfo('3', account).call()
+  const { amount: masterPresalePoolAmount } = await masterChefContract.methods.userInfo(String(presalePid), account).call()
 
   return {
     ...stakedBalances,
     0: new BigNumber(masterPoolAmount).toJSON(),
-    3: new BigNumber(masterPresalePoolAmount).toJSON(),
+    [presalePid]: new BigNumber(masterPresalePoolAmount).toJSON(),
   }
 }
 
@@ -101,11 +103,11 @@ export const fetchUserPendingRewards = async (account) => {
   const pendingReward = await masterChefContract.methods.pendingGouda('0', account).call()
 
   // Preasle / Gouda pool
-  const pendingPresaleReward = await masterChefContract.methods.pendingGouda('3', account).call()
+  const pendingPresaleReward = await masterChefContract.methods.pendingGouda(String(presalePid), account).call()
 
   return {
     ...pendingRewards,
     0: new BigNumber(pendingReward).toJSON(),
-    3: new BigNumber(pendingPresaleReward).toJSON(),
+    [presalePid]: new BigNumber(pendingPresaleReward).toJSON(),
   }
 }
