@@ -18,6 +18,7 @@ import { useBlock } from 'state/hooks'
 import tokens from 'config/constants/tokens'
 import { DEFAULT_TOKEN_DECIMAL, BASE_URL, BASE_BSC_SCAN_URL } from 'config'
 import presaleAbi from 'config/abi/presale.json'
+import airdropAbi from 'config/abi/airdrop.json'
 import { registerToken } from 'utils/wallet'
 import PresaleInput from './components/PresaleInput'
 
@@ -214,21 +215,30 @@ const Presale: React.FC = () => {
           const tokenLeft = new BigNumber(presaleTotal).div(DEFAULT_TOKEN_DECIMAL)
 
           setRemainingToken(tokenLeft.toNumber().toLocaleString('en-US', { maximumFractionDigits: 0 }))
-          setYourGouda(new BigNumber(boughtGouda).div(DEFAULT_TOKEN_DECIMAL).toNumber().toLocaleString('en-US', { maximumFractionDigits: 2 }))
+          // setYourGouda(new BigNumber(boughtGouda).div(DEFAULT_TOKEN_DECIMAL).toNumber().toLocaleString('en-US', { maximumFractionDigits: 2 }))
           setUnlockedBlocknumber(new BigNumber(blockToUnblock).toString())
           setCountdown(secondsToTime(new BigNumber(blockToUnblock).minus(currentBlock).toNumber() * 3))
+          multicall(airdropAbi, [
+            {
+              address: airdropAddress,
+              name: 'buyers',
+              params: [account],
+            },
+          ]).then(([boughtOldGouda]) => {
+            setYourGouda(new BigNumber(boughtOldGouda).plus(new BigNumber(boughtGouda)).div(DEFAULT_TOKEN_DECIMAL).toNumber().toLocaleString('en-US', { maximumFractionDigits: 2 }))
+          })
         })
       }
     } catch (error) {
       console.error(error)
     }
     
-  }, [currentBlock, presaleContract, account, presaleAddress])
+  }, [currentBlock, presaleContract, account, presaleAddress, airdropAddress])
 
   useEffect(() => {
     try {
       if (account) {
-        presaleContract.methods
+        airdropContract.methods
           .claimers(account)
           .call()
           .then(setIsClaimed)
@@ -236,7 +246,7 @@ const Presale: React.FC = () => {
     } catch(error) {
       console.error(error)
     }
-  }, [presaleContract, account, currentBlock])
+  }, [airdropContract, account, currentBlock])
 
   const handleSelectMaxBusd = useCallback(() => {
     setValBusd(fullBusdBalance)
