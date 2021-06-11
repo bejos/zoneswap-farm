@@ -12,8 +12,6 @@ import { PoolsState, Pool } from '../types'
 
 const initialState: PoolsState = { data: [...poolsConfig] }
 
-export const masterPids = [0, 3]
-
 export const PoolsSlice = createSlice({
   name: 'Pools',
   initialState,
@@ -47,7 +45,6 @@ export const { setPoolsPublicData, setPoolsUserData, updatePoolsUserData } = Poo
 export const fetchPoolsPublicDataAsync = () => async (dispatch) => {
   try {
     const blockLimits = await fetchPoolsBlockLimits()
-    console.log('fetchPoolsPublicDataAsync')
     const totalStakings = await fetchPoolsTotalStaking()
     const liveData = poolsConfig.map((pool) => {
       const blockLimit = blockLimits.find((entry) => entry.sousId === pool.sousId)

@@ -23,8 +23,6 @@ export const fetchPoolsAllowance = async (account) => {
     params: [account, getAddress(p.contractAddress)],
   }))
 
-  console.log(calls)
-
   const allowances = await multicall(erc20ABI, calls)
   return nonBnbPools.reduce(
     (acc, pool, index) => ({ ...acc, [pool.sousId]: new BigNumber(allowances[index]).toJSON() }),
@@ -44,7 +42,6 @@ export const fetchUserBalances = async (account) => {
     (acc, pool, index) => ({ ...acc, [pool.sousId]: new BigNumber(tokenBalancesRaw[index]).toJSON() }),
     {},
   )
-  console.log(calls)
 
   // BNB pools
   const bnbBalance = await web3.eth.getBalance(account)

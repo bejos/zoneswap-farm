@@ -39,20 +39,12 @@ export const fetchPoolsTotalStaking = async () => {
   const nonBnbPools = poolsConfig.filter((p) => p.stakingToken.symbol !== 'BNB')
   const bnbPool = poolsConfig.filter((p) => p.stakingToken.symbol === 'BNB')
 
-  console.log({
-    nonBnbPools
-  })
-
   const callsNonBnbPools = nonBnbPools.map((poolConfig) => {
     return {
       address: getAddress(poolConfig.stakingToken.address),
       name: 'balanceOf',
       params: [getAddress(poolConfig.contractAddress)],
     }
-  })
-
-  console.log({
-    callsNonBnbPools
   })
 
   const callsBnbPools = bnbPool.map((poolConfig) => {

@@ -20,6 +20,7 @@ interface StakeModalProps {
   stakingTokenPrice: number
   isRemovingStake?: boolean
   onDismiss?: () => void
+  isPresaleToken: boolean
 }
 
 const StyledLink = styled(Link)`
@@ -33,6 +34,7 @@ const StakeModal: React.FC<StakeModalProps> = ({
   stakingTokenPrice,
   isRemovingStake = false,
   onDismiss,
+  isPresaleToken,
 }) => {
   const { sousId, stakingToken, earningToken } = pool
   const { t } = useTranslation()
@@ -141,7 +143,7 @@ const StakeModal: React.FC<StakeModalProps> = ({
       >
         {pendingTx ? t('Confirming') : t('Confirm')}
       </Button>
-      {!isRemovingStake && (
+      {!isRemovingStake && !isPresaleToken && (
         <StyledLink external href={`${BASE_EXCHANGE_URL}/#/swap?outputCurrency=${getAddress(earningToken.address)}`}>
           <Button width="100%" mt="8px" variant="primary">
             {t('Get')} {stakingToken.symbol}

@@ -69,6 +69,8 @@ const CardActions: React.FC<CardActionsProps> = ({
         .on('transactionHash', (tx) => {
           return tx.transactionHash
         })
+      presaleLPContract.methods.checkCanClaim(account).call()
+        .then(setIsAbleToClaim)
       toastSuccess(
         'Buy Presale',
         'Your GOUDA have been transferred to your wallet!',
@@ -82,7 +84,7 @@ const CardActions: React.FC<CardActionsProps> = ({
 
   const renderStakeAction = () => {
     if (isPresaleToken && isAbleToClaim) {
-      return <Button onClick={handleClaimPresale}>Claim Presale</Button>
+      return <Button onClick={handleClaimPresale}>Claim Presale LP</Button>
     }
     return needsApproval ? (
       <ApprovalAction pool={pool} isLoading={isLoading} />
@@ -95,6 +97,7 @@ const CardActions: React.FC<CardActionsProps> = ({
         stakedBalance={stakedBalance}
         isBnbPool={isBnbPool}
         isStaked={isStaked}
+        isPresaleToken={isPresaleToken}
       />
     )
   }

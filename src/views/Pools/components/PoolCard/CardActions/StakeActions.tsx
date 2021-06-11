@@ -23,6 +23,7 @@ interface StakeActionsProps {
   stakingTokenPrice: number
   stakedBalance: BigNumber
   isBnbPool: boolean
+  isPresaleToken: boolean
   isStaked: ConstrainBoolean
   isLoading?: boolean
 }
@@ -35,6 +36,7 @@ const StakeAction: React.FC<StakeActionsProps> = ({
   isBnbPool,
   isStaked,
   isLoading = false,
+  isPresaleToken,
 }) => {
   const { stakingToken, earningToken, stakingLimit, isFinished } = pool
   const { t } = useTranslation()
@@ -49,11 +51,12 @@ const StakeAction: React.FC<StakeActionsProps> = ({
   const [onPresentTokenRequired] = useModal(<NotEnoughTokensModal tokenSymbol={stakingToken.symbol} />)
 
   const [onPresentStake] = useModal(
-    <StakeModal stakingMax={stakingMax} isBnbPool={isBnbPool} pool={pool} stakingTokenPrice={stakingTokenPrice} />,
+    <StakeModal isPresaleToken={isPresaleToken} stakingMax={stakingMax} isBnbPool={isBnbPool} pool={pool} stakingTokenPrice={stakingTokenPrice} />,
   )
 
   const [onPresentUnstake] = useModal(
     <StakeModal
+      isPresaleToken={isPresaleToken}
       stakingMax={stakedBalance}
       isBnbPool={isBnbPool}
       pool={pool}

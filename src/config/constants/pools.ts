@@ -1,7 +1,7 @@
 import tokens from './tokens'
 import { PoolConfig, PoolCategory } from './types'
 
-export const masterPids = [0, 3]
+export const masterPids = [0, 4]
 
 const pools: PoolConfig[] = [
   {
@@ -19,7 +19,7 @@ const pools: PoolConfig[] = [
     isFinished: false,
   },
   {
-    sousId: 3,
+    sousId: 4,
     stakingToken: tokens.presale,
     earningToken: tokens.cow,
     contractAddress: {
