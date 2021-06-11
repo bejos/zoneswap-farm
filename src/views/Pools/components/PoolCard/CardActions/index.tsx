@@ -56,7 +56,7 @@ const CardActions: React.FC<CardActionsProps> = ({
   }, [presaleLPAddress, web3])
 
   useEffect(() => {
-    presaleLPContract.methods.checkCanClaim().call()
+    presaleLPContract.methods.checkCanClaim(account).call()
       .then(setIsAbleToClaim)
   }, [account, presaleLPContract])
 

@@ -7,7 +7,6 @@ import { getAddress, getPresaleLPAddress } from 'utils/addressHelpers'
 import { useGetApiPrice } from 'state/hooks'
 import { Pool } from 'state/types'
 import tokens from 'config/constants/tokens'
-import { useWeb3React } from '@web3-react/core'
 import { getPresaleLPContract } from 'utils/contractHelpers'
 import useWeb3 from 'hooks/useWeb3'
 import AprRow from './AprRow'
@@ -20,15 +19,10 @@ const presalePrice = 0.5
 
 const PoolCard: React.FC<{ pool: Pool; account: string }> = ({ pool, account }) => {
   const web3 = useWeb3()
-  const [isAbleToClaim, setIsAbleToClaim] = useState(false)
+  const [presaleAmount, setPresaleAmount] = useState()
   const { sousId, stakingToken, earningToken, isFinished, userData } = pool
   const presaleToken = getAddress(tokens.presale.address)
   const isPresaleToken = getAddress(stakingToken.address) === presaleToken
-  console.log({
-    isPresaleToken,
-    presaleToken,
-    staking: stakingToken.address
-  })
   const { t } = useTranslation()
   const stakedBalance = new BigNumber(userData?.stakedBalance || 0)
   const accountHasStakedBalance = stakedBalance?.toNumber() > 0
@@ -40,11 +34,15 @@ const PoolCard: React.FC<{ pool: Pool; account: string }> = ({ pool, account }) 
     return getPresaleLPContract(presaleLPAddress, web3)
   }, [presaleLPAddress, web3])
   
+  useEffect(() => {
+    if (account) {
+      presaleLPContract.methods.checkPresaleAmount(account).call().then(setPresaleAmount)
+    }
+  }, [account, presaleLPContract])
 
-  // if(isPresaleToken) {
-  //   return null
-  // }
-
+  if (isPresaleToken && presaleAmount === '0') {
+    return null
+  }
   return (
     <StyledCard
       isStaking={!isFinished && accountHasStakedBalance}
