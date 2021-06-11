@@ -48,15 +48,20 @@ import predictionsAbi from 'config/abi/predictions.json'
 import presaleAbi from 'config/abi/presale.json'
 import airdropAbi from 'config/abi/airdrop.json'
 import luckyDrawAbi from 'config/abi/luckyDraw.json'
+import presaleLPAbi from 'config/abi/presaleLP.json'
 
 const getContract = (abi: any, address: string, web3?: Web3) => {
   const _web3 = web3 ?? web3NoAccount
   return new _web3.eth.Contract((abi as unknown) as AbiItem, address)
 }
+export const getPresaleLPContract = (address: string, web3?: Web3) => {
+  return getContract(presaleLPAbi, address, web3)
+}
 
 export const getLuckyDrawContract = (address: string, web3?: Web3) => {
   return getContract(luckyDrawAbi, address, web3)
 }
+
 export const getAirdropContract = (address: string, web3?: Web3) => {
   return getContract(airdropAbi, address, web3)
 }

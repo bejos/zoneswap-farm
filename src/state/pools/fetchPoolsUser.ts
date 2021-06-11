@@ -1,5 +1,5 @@
 import { AbiItem } from 'web3-utils'
-import poolsConfig from 'config/constants/pools'
+import poolsConfig, { masterPids } from 'config/constants/pools'
 import masterChefABI from 'config/abi/masterchef.json'
 import sousChefABI from 'config/abi/sousChef.json'
 import erc20ABI from 'config/abi/erc20.json'
@@ -12,7 +12,7 @@ import BigNumber from 'bignumber.js'
 // BNB pools use the native BNB token (wrapping ? unwrapping is done at the contract level)
 const nonBnbPools = poolsConfig.filter((p) => p.stakingToken.symbol !== 'BNB')
 const bnbPools = poolsConfig.filter((p) => p.stakingToken.symbol === 'BNB')
-const nonMasterPools = poolsConfig.filter((p) => p.sousId !== 0)
+const nonMasterPools = poolsConfig.filter((p) => !masterPids.includes(p.sousId))
 const web3 = getWeb3NoAccount()
 const masterChefContract = new web3.eth.Contract((masterChefABI as unknown) as AbiItem, getMasterChefAddress())
 
@@ -22,6 +22,8 @@ export const fetchPoolsAllowance = async (account) => {
     name: 'allowance',
     params: [account, getAddress(p.contractAddress)],
   }))
+
+  console.log(calls)
 
   const allowances = await multicall(erc20ABI, calls)
   return nonBnbPools.reduce(
@@ -42,6 +44,7 @@ export const fetchUserBalances = async (account) => {
     (acc, pool, index) => ({ ...acc, [pool.sousId]: new BigNumber(tokenBalancesRaw[index]).toJSON() }),
     {},
   )
+  console.log(calls)
 
   // BNB pools
   const bnbBalance = await web3.eth.getBalance(account)
@@ -59,6 +62,7 @@ export const fetchUserStakeBalances = async (account) => {
     name: 'userInfo',
     params: [account],
   }))
+  // console.log(calls)
   const userInfo = await multicall(sousChefABI, calls)
   const stakedBalances = nonMasterPools.reduce(
     (acc, pool, index) => ({
@@ -68,10 +72,17 @@ export const fetchUserStakeBalances = async (account) => {
     {},
   )
 
-  // Cake / Cake pool
+  // Gouda / Gouda pool
   const { amount: masterPoolAmount } = await masterChefContract.methods.userInfo('0', account).call()
 
-  return { ...stakedBalances, 0: new BigNumber(masterPoolAmount).toJSON() }
+  // Preasle / Gouda pool
+  const { amount: masterPresalePoolAmount } = await masterChefContract.methods.userInfo('3', account).call()
+
+  return {
+    ...stakedBalances,
+    0: new BigNumber(masterPoolAmount).toJSON(),
+    3: new BigNumber(masterPresalePoolAmount).toJSON(),
+  }
 }
 
 export const fetchUserPendingRewards = async (account) => {
@@ -92,5 +103,12 @@ export const fetchUserPendingRewards = async (account) => {
   // Cake / Cake pool
   const pendingReward = await masterChefContract.methods.pendingGouda('0', account).call()
 
-  return { ...pendingRewards, 0: new BigNumber(pendingReward).toJSON() }
+  // Preasle / Gouda pool
+  const pendingPresaleReward = await masterChefContract.methods.pendingGouda('3', account).call()
+
+  return {
+    ...pendingRewards,
+    0: new BigNumber(pendingReward).toJSON(),
+    3: new BigNumber(pendingPresaleReward).toJSON(),
+  }
 }

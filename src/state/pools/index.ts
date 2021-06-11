@@ -12,6 +12,8 @@ import { PoolsState, Pool } from '../types'
 
 const initialState: PoolsState = { data: [...poolsConfig] }
 
+export const masterPids = [0, 3]
+
 export const PoolsSlice = createSlice({
   name: 'Pools',
   initialState,
@@ -43,19 +45,23 @@ export const { setPoolsPublicData, setPoolsUserData, updatePoolsUserData } = Poo
 
 // Thunks
 export const fetchPoolsPublicDataAsync = () => async (dispatch) => {
-  const blockLimits = await fetchPoolsBlockLimits()
-  const totalStakings = await fetchPoolsTotalStaking()
+  try {
+    const blockLimits = await fetchPoolsBlockLimits()
+    console.log('fetchPoolsPublicDataAsync')
+    const totalStakings = await fetchPoolsTotalStaking()
+    const liveData = poolsConfig.map((pool) => {
+      const blockLimit = blockLimits.find((entry) => entry.sousId === pool.sousId)
+      const totalStaking = totalStakings.find((entry) => entry.sousId === pool.sousId)
+      return {
+        ...blockLimit,
+        ...totalStaking,
+      }
+    })
 
-  const liveData = poolsConfig.map((pool) => {
-    const blockLimit = blockLimits.find((entry) => entry.sousId === pool.sousId)
-    const totalStaking = totalStakings.find((entry) => entry.sousId === pool.sousId)
-    return {
-      ...blockLimit,
-      ...totalStaking,
-    }
-  })
-
-  dispatch(setPoolsPublicData(liveData))
+    dispatch(setPoolsPublicData(liveData))
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export const fetchPoolsUserDataAsync = (account) => async (dispatch) => {

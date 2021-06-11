@@ -3,6 +3,15 @@ const tokens = {
     symbol: 'BNB',
     projectLink: 'https://www.binance.com/',
   },
+  presale: {
+    symbol: 'PRESALE GOUDA',
+    address: {
+      56: '0x14B06bF2C5B0AFd259c47c4be39cB9368ef0be3f',
+      97: '0x880534D0dFa688dCF5C87bc33d85A5E11D254039',
+    },
+    decimals: 18,
+    projectLink: 'https://cowswap.finance/',
+  },
   cow: {
     symbol: 'GOUDA',
     address: {

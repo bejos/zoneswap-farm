@@ -9,6 +9,9 @@ export const getAddress = (address: Address, chainId?: string): string => {
   return address[foundChainId] ? address[foundChainId] : address[mainNetChainId]
 }
 
+export const getPresaleLPAddress = () => {
+  return getAddress(tokens.presale.address)
+}
 export const getLuckyDrawAddress = () => {
   return getAddress(addresses.luckyDraw)
 }
