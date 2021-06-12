@@ -43,15 +43,15 @@ const AprRow: React.FC<AprRowProps> = ({
     parseFloat(tokenPerBlock),
   )
 
-  // console.log({
-  //   stakingTokenPrice,
-  //   earningTokenPrice,
-  //   totalStaked,
-  //   tokenPerBlock,
-  //   apr,
-  //   isFinished,
-  //   pool
-  // })
+  console.debug({
+    stakingTokenPrice,
+    earningTokenPrice,
+    totalStaked,
+    tokenPerBlock,
+    apr,
+    isFinished,
+    pool
+  })
 
   // special handling for tokens like tBTC or BIFI where the daily token rewards for $1000 dollars will be less than 0.001 of that token
   const isHighValueToken = Math.round(earningTokenPrice / 1000) > 0

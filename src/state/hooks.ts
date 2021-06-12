@@ -178,6 +178,10 @@ export const useGetApiPrice = (address: string) => {
   }
   const goudaAddreses = [tokens.cow.address[56], tokens.cow.address[97]]
   if (goudaAddreses.includes(address.toLowerCase())) {
+    console.debug({
+      address,
+      goudaAddreses
+    })
     return cakePriceBusd.toNumber()
   }
 
@@ -192,7 +196,7 @@ export const useGetApiPrice = (address: string) => {
 export const usePriceCakeBusd = (): BigNumber => {
   const pid = 2
   const farm = useFarmFromPid(pid)
-  return farm.tokenPriceVsQuote ? new BigNumber(0.5) : BIG_ZERO
+  return farm.tokenPriceVsQuote ? new BigNumber(0.5) : new BigNumber(0.5)
 }
 
 // Block

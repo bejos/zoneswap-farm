@@ -9,7 +9,7 @@ const farms: FarmConfig[] = [
     pid: 0,
     lpSymbol: 'GOUDA',
     lpAddresses: {
-      97: '0x14B06bF2C5B0AFd259c47c4be39cB9368ef0be3f',
+      97: '0xbA36B1732B0b55DA418e7910F95b3299C021d58a',
       56: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
     },
     token: tokens.syrup,

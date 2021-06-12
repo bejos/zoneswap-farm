@@ -1,4 +1,6 @@
+import { getAddress } from 'utils/addressHelpers'
 import tokens from './tokens'
+import contracts from './contracts'
 import { PoolConfig, PoolCategory } from './types'
 
 export const masterPids = [0, 4]
@@ -9,7 +11,7 @@ const pools: PoolConfig[] = [
     stakingToken: tokens.cow,
     earningToken: tokens.cow,
     contractAddress: {
-      97: '0xf2811d44770a10b0ab717008835192c41a8495f1',
+      97: getAddress(contracts.masterChef),
       56: '0x73feaa1eE314F8c655E354234017bE2193C9E24E',
     },
     poolCategory: PoolCategory.CORE,
@@ -18,20 +20,20 @@ const pools: PoolConfig[] = [
     sortOrder: 1,
     isFinished: false,
   },
-  {
-    sousId: 4,
-    stakingToken: tokens.presale,
-    earningToken: tokens.cow,
-    contractAddress: {
-      97: '0xf2811d44770a10b0ab717008835192c41a8495f1',
-      56: '0x73feaa1eE314F8c655E354234017bE2193C9E24E',
-    },
-    poolCategory: PoolCategory.CORE,
-    harvest: true,
-    tokenPerBlock: '4',
-    sortOrder: 1,
-    isFinished: false,
-  },
+  // {
+  //   sousId: 4,
+  //   stakingToken: tokens.presale,
+  //   earningToken: tokens.cow,
+  //   contractAddress: {
+  //     97: getAddress(contracts.masterChef),
+  //     56: '0x73feaa1eE314F8c655E354234017bE2193C9E24E',
+  //   },
+  //   poolCategory: PoolCategory.CORE,
+  //   harvest: true,
+  //   tokenPerBlock: '4',
+  //   sortOrder: 1,
+  //   isFinished: false,
+  // },
   // {
   //   sousId: 116,
   //   stakingToken: tokens.cake,

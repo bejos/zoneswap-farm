@@ -75,7 +75,7 @@ export const fetchUserStakeBalances = async (account) => {
   const { amount: masterPoolAmount } = await masterChefContract.methods.userInfo('0', account).call()
 
   // Preasle / Gouda pool
-  const { amount: masterPresalePoolAmount } = await masterChefContract.methods.userInfo(String(presalePid), account).call()
+  const { amount: masterPresalePoolAmount } = await masterChefContract.methods.userInfo(String(presalePid), account).call().catch(error => console.debug(error))
 
   return {
     ...stakedBalances,
@@ -103,7 +103,7 @@ export const fetchUserPendingRewards = async (account) => {
   const pendingReward = await masterChefContract.methods.pendingGouda('0', account).call()
 
   // Preasle / Gouda pool
-  const pendingPresaleReward = await masterChefContract.methods.pendingGouda(String(presalePid), account).call()
+  const pendingPresaleReward = await masterChefContract.methods.pendingGouda(String(presalePid), account).call().catch(error => console.debug(error))
 
   return {
     ...pendingRewards,
