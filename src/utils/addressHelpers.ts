@@ -2,6 +2,8 @@ import addresses from 'config/constants/contracts'
 import tokens from 'config/constants/tokens'
 import { Address } from 'config/constants/types'
 
+export const isTestnet = process.env.REACT_APP_CHAIN_ID === '56'
+
 export const getAddress = (address: Address, chainId?: string): string => {
   const mainNetChainId = 56
   const foundChainId = chainId || process.env.REACT_APP_CHAIN_ID
