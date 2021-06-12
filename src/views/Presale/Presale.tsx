@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import useTokenBalance, { useGetBnbBalance } from 'hooks/useTokenBalance'
 import { getFullDisplayBalance } from 'utils/formatBalance'
-import { getPresaleContract, getBep20Contract, getAirdropContract } from 'utils/contractHelpers'
+import { getPresaleContract, getBep20Contract } from 'utils/contractHelpers'
 import { BIG_ZERO } from 'utils/bigNumber'
 import multicall from 'utils/multicall'
 import { getPresaleAddress, getAddress, getAirdropAddress } from 'utils/addressHelpers'
@@ -29,22 +29,6 @@ import busdIcon from './icons/BUSD.svg'
 import presaleBackground from './images/presale.svg'
 
 const goudaSrc = `${BASE_URL}/images/tokens/GOUDA.png`
-
-const secondsToTime = (input: number | undefined) => {
-  if(!input) {
-    return 'N/A'
-  }
-
-  let seconds = input
-
-  const days = Math.floor(seconds / (3600 * 24));
-  seconds -= days * 3600 * 24;
-  const hrs = Math.floor(seconds / 3600);
-  seconds -= hrs * 3600;
-  const mnts = Math.floor(seconds / 60);
-  seconds -= mnts * 60;
-  return `${days} days, ${hrs}:${mnts}:${seconds}`;
-}
 
 const FCard = styled.div`
   align-self: baseline;
@@ -72,21 +56,6 @@ const CardHeading = styled(Flex)`
   }
 `
 
-const BottomStyled = styled(Flex)`
-  position: fixed;
-  bottom: 0px;
-  left: 0px;
-  width: 100%;
-  display: flex;
-  -webkit-box-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  align-items: center;
-  flex-wrap: wrap;
-  background-color: rgb(239, 244, 245);
-  padding: 16px;
-`
-
 const Presale: React.FC = () => {
   const web3 = useWeb3()
   const { toastSuccess, toastError } = useToast()
@@ -99,13 +68,10 @@ const Presale: React.FC = () => {
   const [unlockedBlocknumber, setUnlockedBlocknumber] = useState('')
   const [estimatedBnbToGouda, setEstimatedBnbToGouda] = useState('0,00')
   const [estimatedBusdToGouda, setEstimatedBusdToGouda] = useState('0,00')
-  const [countdown, setCountdown] = useState('00:00:00')
   const [yourGouda, setYourGouda] = useState('0,00')
-  const [isClaimed, setIsClaimed] = useState(false)
   const [remainingToken, setRemainingToken] = useState('0')
   const [bnbPending, setBnbPending] = useState(false)
   const [busdPending, setBusdPending] = useState(false)
-  const [claiming, setClaiming] = useState(false)
   const { balance: bnbBalance } = useGetBnbBalance()
   const busdBalance = useTokenBalance(getAddress(tokens.busd.address))
 
@@ -119,10 +85,6 @@ const Presale: React.FC = () => {
   }, [presaleAddress, web3])
 
   const airdropAddress = getAirdropAddress()
-
-  const airdropContract = useMemo(() => {
-    return getAirdropContract(airdropAddress, web3)
-  }, [airdropAddress, web3]) 
 
   const busdContract = useMemo(() => {
     return getBep20Contract(getAddress(tokens.busd.address), web3)
@@ -215,9 +177,7 @@ const Presale: React.FC = () => {
           const tokenLeft = new BigNumber(presaleTotal).div(DEFAULT_TOKEN_DECIMAL)
 
           setRemainingToken(tokenLeft.toNumber().toLocaleString('en-US', { maximumFractionDigits: 0 }))
-          // setYourGouda(new BigNumber(boughtGouda).div(DEFAULT_TOKEN_DECIMAL).toNumber().toLocaleString('en-US', { maximumFractionDigits: 2 }))
           setUnlockedBlocknumber(new BigNumber(blockToUnblock).toString())
-          setCountdown(secondsToTime(new BigNumber(blockToUnblock).minus(currentBlock).toNumber() * 3))
           multicall(airdropAbi, [
             {
               address: airdropAddress,
@@ -234,19 +194,6 @@ const Presale: React.FC = () => {
     }
     
   }, [currentBlock, presaleContract, account, presaleAddress, airdropAddress])
-
-  useEffect(() => {
-    try {
-      if (account) {
-        airdropContract.methods
-          .claimers(account)
-          .call()
-          .then(setIsClaimed)
-      }
-    } catch(error) {
-      console.error(error)
-    }
-  }, [airdropContract, account, currentBlock])
 
   const handleSelectMaxBusd = useCallback(() => {
     setValBusd(fullBusdBalance)
@@ -319,36 +266,6 @@ const Presale: React.FC = () => {
     }
     
   }, [valBnb, account, presaleContract, presaleAddress, toastError, toastSuccess])
-
-  const handleClaimAirdrop = useCallback(async() => {
-    setClaiming(true)
-    try {
-      await airdropContract.methods
-        .claim()
-        .send({ from: account, gas: 200000, to: airdropAddress })
-        .on('transactionHash', (tx) => {
-          return tx.transactionHash
-        })
-      toastSuccess(
-        'Airdrop',
-        'Your GOUDA have been transferred to your wallet!',
-      )
-      setClaiming(false)
-    } catch (e) {
-      toastError('Canceled', 'Please try again and confirm the transaction.')
-      setClaiming(false)
-    }
-  }, [airdropContract, account, toastError, toastSuccess, airdropAddress])
-
-  const claimAction = useMemo(() => {
-    if (isClaimed) {
-      return 'Claimed Airdrop'
-    }
-    if (claiming) {
-      return 'Claiming ...'
-    }
-    return 'Claim Airdrop'
-  }, [isClaimed, claiming])
 
   return (
     <>
@@ -472,17 +389,6 @@ const Presale: React.FC = () => {
           </FCard>
         </FlexLayout>
       </Page>
-      <BottomStyled>
-        <Text color="textSubtle" mr={20} >News: </Text>
-        <Button
-          scale="sm"
-          variant="primary"
-          disabled={isClaimed || claiming}
-          onClick={handleClaimAirdrop}
-        >
-          {claimAction}
-        </Button>
-      </BottomStyled>
     </>
   )
 }
