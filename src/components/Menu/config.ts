@@ -12,7 +12,7 @@ const config: MenuEntry[] = [
   {
     label: 'Presale',
     icon: 'PresaleIcon',
-    href: '/presale',
+    href: isMainnet ? '/presale' : '/',
     status: {
       text: "LIVE",
       color: "failure",

@@ -178,10 +178,10 @@ export const useGetApiPrice = (address: string) => {
   }
   const goudaAddreses = [tokens.cow.address[56], tokens.cow.address[97]]
   if (goudaAddreses.includes(address.toLowerCase())) {
-    console.debug({
-      address,
-      goudaAddreses
-    })
+    // console.debug({
+    //   address,
+    //   goudaAddreses
+    // })
     return cakePriceBusd.toNumber()
   }
 
