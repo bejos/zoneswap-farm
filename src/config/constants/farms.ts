@@ -36,10 +36,10 @@ const farms: FarmConfig[] = [
     quoteToken: tokens.busd,
   },
   {
-    pid: 2,
+    pid: 4,
     lpSymbol: 'GOUDA-BUSD LP CLONED',
     lpAddresses: {
-      97: '0xbA36B1732B0b55DA418e7910F95b3299C021d58a',
+      97: '0x12aE57f0Dae724b9944F970fF55b2e462948190E',
       56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
     },
     token: tokens.cow,
