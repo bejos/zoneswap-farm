@@ -1,7 +1,7 @@
 import { MenuEntry } from '@pancakeswap-libs/uikit'
 import tokens from 'config/constants/tokens'
 import { BASE_BSC_SCAN_URL } from 'config'
-import { getAddress, isTestnet } from 'utils/addressHelpers'
+import { getAddress, isMainnet } from 'utils/addressHelpers'
 
 const config: MenuEntry[] = [
   {
@@ -47,7 +47,7 @@ const config: MenuEntry[] = [
   {
     label: 'Farms',
     icon: 'FarmIcon',
-    href: isTestnet ? '/' : '/farms',
+    href: isMainnet ? '/' : '/farms',
     // href: '/farms',
     status: {
       text: 'COMING',
@@ -57,7 +57,7 @@ const config: MenuEntry[] = [
   {
     label: 'Pools',
     icon: 'PoolIcon',
-    href: isTestnet ? '/' : '/pools',
+    href: isMainnet ? '/' : '/pools',
     // href: '/pools',
     status: {
       text: 'COMING',
