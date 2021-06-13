@@ -624,6 +624,15 @@ const tokens = {
     decimals: 18,
     projectLink: 'https://www.paxos.com/busd/',
   },
+  cusd: {
+    symbol: 'CUSD',
+    address: {
+      56: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
+      97: '0x12aE57f0Dae724b9944F970fF55b2e462948190E',
+    },
+    decimals: 18,
+    projectLink: 'https://www.paxos.com/busd/',
+  },
   eth: {
     symbol: 'ETH',
     address: {
