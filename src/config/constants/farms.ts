@@ -16,10 +16,10 @@ const farms: FarmConfig[] = [
     quoteToken: tokens.wbnb,
   },
   {
-    pid: 1,
+    pid: 6,
     lpSymbol: 'GOUDA-BNB LP',
     lpAddresses: {
-      97: '0x286254C0C9B48ad88EBC0537e08dE2CFFB33dA2d',
+      97: '0xE1072Ca90B6CB4dafB55Cd26F2D8B19f7F99d8C1',
       56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
     },
     token: tokens.cow,
@@ -36,10 +36,10 @@ const farms: FarmConfig[] = [
   //   quoteToken: tokens.busd,
   // },
   {
-    pid: 5,
+    pid: 7,
     lpSymbol: 'GOUDA-BUSD LP CLONED',
     lpAddresses: {
-      97: '0x5c253C4e21BF9070385470e9A524BFd7Cc845d5A',
+      97: '0x40407d0b500ec2a0FfbB0f5fbc03f12a1CEebB93',
       56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
     },
     token: tokens.cow,
