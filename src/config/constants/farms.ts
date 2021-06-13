@@ -19,7 +19,7 @@ const farms: FarmConfig[] = [
     pid: 2,
     lpSymbol: 'GOUDA-BNB LP',
     lpAddresses: {
-      97: '0x286254C0C9B48ad88EBC0537e08dE2CFFB33dA2d',
+      97: '0xA561D49d531354Be0ee95D52605b917c7e903F24',
       56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
     },
     token: tokens.cow,
@@ -29,7 +29,7 @@ const farms: FarmConfig[] = [
     pid: 1,
     lpSymbol: 'GOUDA-BUSD LP',
     lpAddresses: {
-      97: '0xA561D49d531354Be0ee95D52605b917c7e903F24',
+      97: '0x286254C0C9B48ad88EBC0537e08dE2CFFB33dA2d',
       56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
     },
     token: tokens.cow,
