@@ -39,7 +39,7 @@ const farms: FarmConfig[] = [
     pid: 5,
     lpSymbol: 'GOUDA-BUSD LP CLONED',
     lpAddresses: {
-      97: '0x4a5151c46803E5C9091b26B8B7ABD6aBef9D5377',
+      97: '0x5c253C4e21BF9070385470e9A524BFd7Cc845d5A',
       56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
     },
     token: tokens.cow,
