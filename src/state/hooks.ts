@@ -8,7 +8,7 @@ import { Team } from 'config/constants/types'
 import Nfts from 'config/constants/nfts'
 import tokens from 'config/constants/tokens'
 import { getWeb3NoAccount } from 'utils/web3'
-import { getAddress } from 'utils/addressHelpers'
+import { getAddress, isMainnet } from 'utils/addressHelpers'
 import { getBalanceNumber } from 'utils/formatBalance'
 import { BIG_ZERO } from 'utils/bigNumber'
 import useRefresh from 'hooks/useRefresh'
@@ -196,7 +196,11 @@ export const useGetApiPrice = (address: string) => {
 export const usePriceCakeBusd = (): BigNumber => {
   const pid = 7
   const farm = useFarmFromPid(pid)
-  return farm.tokenPriceVsQuote ? new BigNumber(0.5) : new BigNumber(0.5)
+
+  if (isMainnet) {
+    return new BigNumber(0.5)
+  }
+  return farm.tokenPriceVsQuote ? new BigNumber(farm.tokenPriceVsQuote) : BIG_ZERO
 }
 
 // Block
