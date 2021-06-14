@@ -25,16 +25,16 @@ const farms: FarmConfig[] = [
     token: tokens.cow,
     quoteToken: tokens.wbnb,
   },
-  // {
-  //   pid: 2,
-  //   lpSymbol: 'GOUDA-BUSD LP',
-  //   lpAddresses: {
-  //     97: '0xA561D49d531354Be0ee95D52605b917c7e903F24',
-  //     56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
-  //   },
-  //   token: tokens.cow,
-  //   quoteToken: tokens.busd,
-  // },
+  {
+    pid: 8,
+    lpSymbol: 'GOUDA-PRESALE LP',
+    lpAddresses: {
+      97: '0x8577ce7d3a2A28Dc2e482D0a560A999655340bDF',
+      56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
+    },
+    token: tokens.cow,
+    quoteToken: tokens.busd,
+  },
   {
     pid: 7,
     lpSymbol: 'GOUDA-BUSD LP CLONED',

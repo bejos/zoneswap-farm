@@ -1,5 +1,5 @@
 import { AbiItem } from 'web3-utils'
-import poolsConfig, { masterPids } from 'config/constants/pools'
+import poolsConfig from 'config/constants/pools'
 import masterChefABI from 'config/abi/masterchef.json'
 import sousChefABI from 'config/abi/sousChef.json'
 import erc20ABI from 'config/abi/erc20.json'
@@ -8,13 +8,11 @@ import { getAddress, getMasterChefAddress } from 'utils/addressHelpers'
 import { getWeb3NoAccount } from 'utils/web3'
 import BigNumber from 'bignumber.js'
 
-const [, presalePid] = masterPids
-
 // Pool 0, Cake / Cake is a different kind of contract (master chef)
 // BNB pools use the native BNB token (wrapping ? unwrapping is done at the contract level)
 const nonBnbPools = poolsConfig.filter((p) => p.stakingToken.symbol !== 'BNB')
 const bnbPools = poolsConfig.filter((p) => p.stakingToken.symbol === 'BNB')
-const nonMasterPools = poolsConfig.filter((p) => !masterPids.includes(p.sousId))
+const nonMasterPools = poolsConfig.filter((p) => p.sousId !== 0)
 const web3 = getWeb3NoAccount()
 const masterChefContract = new web3.eth.Contract((masterChefABI as unknown) as AbiItem, getMasterChefAddress())
 
@@ -74,13 +72,9 @@ export const fetchUserStakeBalances = async (account) => {
   // Gouda / Gouda pool
   const { amount: masterPoolAmount } = await masterChefContract.methods.userInfo('0', account).call()
 
-  // Preasle / Gouda pool
-  const { amount: masterPresalePoolAmount } = await masterChefContract.methods.userInfo(String(presalePid), account).call().catch(error => console.debug(error))
-
   return {
     ...stakedBalances,
     0: new BigNumber(masterPoolAmount).toJSON(),
-    [presalePid]: new BigNumber(masterPresalePoolAmount).toJSON(),
   }
 }
 
@@ -102,12 +96,8 @@ export const fetchUserPendingRewards = async (account) => {
   // Cake / Cake pool
   const pendingReward = await masterChefContract.methods.pendingGouda('0', account).call()
 
-  // Preasle / Gouda pool
-  const pendingPresaleReward = await masterChefContract.methods.pendingGouda(String(presalePid), account).call().catch(error => console.debug(error))
-
   return {
     ...pendingRewards,
     0: new BigNumber(pendingReward).toJSON(),
-    [presalePid]: new BigNumber(pendingPresaleReward).toJSON(),
   }
 }

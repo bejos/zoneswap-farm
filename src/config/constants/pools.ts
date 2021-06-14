@@ -3,8 +3,6 @@ import tokens from './tokens'
 import contracts from './contracts'
 import { PoolConfig, PoolCategory } from './types'
 
-export const masterPids = [0, 8]
-
 const pools: PoolConfig[] = [
   {
     sousId: 0,
@@ -20,20 +18,20 @@ const pools: PoolConfig[] = [
     sortOrder: 1,
     isFinished: false,
   },
-  {
-    sousId: 8,
-    stakingToken: tokens.presale,
-    earningToken: tokens.cow,
-    contractAddress: {
-      97: getAddress(contracts.masterChef),
-      56: '0x73feaa1eE314F8c655E354234017bE2193C9E24E',
-    },
-    poolCategory: PoolCategory.CORE,
-    harvest: true,
-    tokenPerBlock: '1',
-    sortOrder: 1,
-    isFinished: false,
-  },
+  // {
+  //   sousId: 8,
+  //   stakingToken: tokens.presale,
+  //   earningToken: tokens.cow,
+  //   contractAddress: {
+  //     97: getAddress(contracts.masterChef),
+  //     56: '0x73feaa1eE314F8c655E354234017bE2193C9E24E',
+  //   },
+  //   poolCategory: PoolCategory.CORE,
+  //   harvest: true,
+  //   tokenPerBlock: '1',
+  //   sortOrder: 1,
+  //   isFinished: false,
+  // },
   // {
   //   sousId: 116,
   //   stakingToken: tokens.cake,
