@@ -3,18 +3,21 @@ import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { Modal, Text, Button, OpenNewIcon, Link } from '@cowswap/uikit'
 import { BASE_EXCHANGE_URL } from 'config'
+import tokens from 'config/constants/tokens'
 import useTheme from 'hooks/useTheme'
+import { getAddress } from 'utils/addressHelpers';
 
 interface NotEnoughTokensModalProps {
   tokenSymbol: string
   onDismiss?: () => void
+  stakingToken?: string
 }
 
 const StyledLink = styled(Link)`
   width: 100%;
 `
 
-const NotEnoughTokensModal: React.FC<NotEnoughTokensModalProps> = ({ tokenSymbol, onDismiss }) => {
+const NotEnoughTokensModal: React.FC<NotEnoughTokensModalProps> = ({ tokenSymbol, onDismiss, stakingToken = getAddress(tokens.cow.address) }) => {
   const { t } = useTranslation()
   const { theme } = useTheme()
 
@@ -33,7 +36,7 @@ const NotEnoughTokensModal: React.FC<NotEnoughTokensModalProps> = ({ tokenSymbol
           tokensymbol: tokenSymbol,
         })}
       </Text>
-      <Button mt="24px" as="a" external href={BASE_EXCHANGE_URL}>
+      <Button mt="24px" as="a" external href={`${BASE_EXCHANGE_URL}/#/swap?outputCurrency=${stakingToken}`}>
         {t('Buy')} {tokenSymbol}
       </Button>
       <StyledLink href="https://yieldwatch.net" external>
