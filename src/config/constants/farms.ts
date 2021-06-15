@@ -15,25 +15,15 @@ const farms: FarmConfig[] = [
     token: tokens.syrup,
     quoteToken: tokens.wbnb,
   },
-  // {
-  //   pid: 6,
-  //   lpSymbol: 'GOUDA-BNB LP',
-  //   lpAddresses: {
-  //     97: '0xE1072Ca90B6CB4dafB55Cd26F2D8B19f7F99d8C1',
-  //     56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
-  //   },
-  //   token: tokens.cow,
-  //   quoteToken: tokens.wbnb,
-  // },
   {
-    pid: 8,
-    lpSymbol: 'GOUDA-PRESALE LP',
+    pid: 6,
+    lpSymbol: 'GOUDA-BNB LP',
     lpAddresses: {
-      97: '0x8577ce7d3a2A28Dc2e482D0a560A999655340bDF',
-      56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
+      97: '0xE1072Ca90B6CB4dafB55Cd26F2D8B19f7F99d8C1',
+      56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
     },
     token: tokens.cow,
-    quoteToken: tokens.presale,
+    quoteToken: tokens.wbnb,
   },
   {
     pid: 7,
@@ -44,6 +34,16 @@ const farms: FarmConfig[] = [
     },
     token: tokens.cow,
     quoteToken: tokens.cusd,
+  },
+  {
+    pid: 8,
+    lpSymbol: 'GOUDA-PRESALE LP',
+    lpAddresses: {
+      97: '0x8577ce7d3a2A28Dc2e482D0a560A999655340bDF',
+      56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
+    },
+    token: tokens.cow,
+    quoteToken: tokens.presale,
   },
 ]
 
