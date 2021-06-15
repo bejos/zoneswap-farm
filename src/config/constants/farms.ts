@@ -15,16 +15,16 @@ const farms: FarmConfig[] = [
     token: tokens.syrup,
     quoteToken: tokens.wbnb,
   },
-  {
-    pid: 6,
-    lpSymbol: 'GOUDA-BNB LP',
-    lpAddresses: {
-      97: '0xE1072Ca90B6CB4dafB55Cd26F2D8B19f7F99d8C1',
-      56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
-    },
-    token: tokens.cow,
-    quoteToken: tokens.wbnb,
-  },
+  // {
+  //   pid: 6,
+  //   lpSymbol: 'GOUDA-BNB LP',
+  //   lpAddresses: {
+  //     97: '0xE1072Ca90B6CB4dafB55Cd26F2D8B19f7F99d8C1',
+  //     56: '0x0eD7e52944161450477ee417DE9Cd3a859b14fD0',
+  //   },
+  //   token: tokens.cow,
+  //   quoteToken: tokens.wbnb,
+  // },
   {
     pid: 8,
     lpSymbol: 'GOUDA-PRESALE LP',
@@ -33,7 +33,7 @@ const farms: FarmConfig[] = [
       56: '0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16',
     },
     token: tokens.cow,
-    quoteToken: tokens.busd,
+    quoteToken: tokens.presale,
   },
   {
     pid: 7,

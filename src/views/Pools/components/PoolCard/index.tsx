@@ -1,14 +1,12 @@
 import BigNumber from 'bignumber.js'
-import React, { useState, useEffect, useMemo } from 'react'
+import React from 'react'
 import { CardBody, Flex, Text, CardRibbon } from '@cowswap/uikit'
 import UnlockButton from 'components/UnlockButton'
 import { useTranslation } from 'contexts/Localization'
-import { getAddress, getPresaleLPAddress } from 'utils/addressHelpers'
+import { getAddress } from 'utils/addressHelpers'
 import { useGetApiPrice } from 'state/hooks'
 import { Pool } from 'state/types'
 import tokens from 'config/constants/tokens'
-import { getPresaleLPContract } from 'utils/contractHelpers'
-import useWeb3 from 'hooks/useWeb3'
 import AprRow from './AprRow'
 import StyledCard from './StyledCard'
 import CardFooter from './CardFooter'
@@ -18,8 +16,6 @@ import CardActions from './CardActions'
 const presalePrice = 0.5
 
 const PoolCard: React.FC<{ pool: Pool; account: string }> = ({ pool, account }) => {
-  const web3 = useWeb3()
-  const [presaleAmount, setPresaleAmount] = useState()
   const { sousId, stakingToken, earningToken, isFinished, userData } = pool
   const presaleToken = getAddress(tokens.presale.address)
   const isPresaleToken = getAddress(stakingToken.address) === presaleToken
@@ -28,21 +24,6 @@ const PoolCard: React.FC<{ pool: Pool; account: string }> = ({ pool, account }) 
   const accountHasStakedBalance = stakedBalance?.toNumber() > 0
   const stakingTokenPrice = useGetApiPrice(stakingToken.address ? getAddress(stakingToken.address) : '')
 
-  const presaleLPAddress = getPresaleLPAddress()
-
-  const presaleLPContract = useMemo(() => {
-    return getPresaleLPContract(presaleLPAddress, web3)
-  }, [presaleLPAddress, web3])
-  
-  useEffect(() => {
-    if (account) {
-      presaleLPContract.methods.checkPresaleAmount(account).call().then(setPresaleAmount)
-    }
-  }, [account, presaleLPContract])
-
-  if (isPresaleToken && presaleAmount === '0') {
-    return null
-  }
   return (
     <StyledCard
       isStaking={!isFinished && accountHasStakedBalance}

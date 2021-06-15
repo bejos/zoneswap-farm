@@ -172,17 +172,18 @@ export const useGetApiPrices = () => {
 export const useGetApiPrice = (address: string) => {
   const prices = useGetApiPrices()
   const cakePriceBusd = usePriceCakeBusd()
-
+  console.log(address)
   if (!prices) {
     return null
   }
   const goudaAddreses = [tokens.cow.address[56], tokens.cow.address[97]]
   if (goudaAddreses.includes(address.toLowerCase())) {
-    // console.debug({
-    //   address,
-    //   goudaAddreses
-    // })
     return cakePriceBusd.toNumber()
+  }
+  
+  const presaleAddreses = [tokens.presale.address[56].toLowerCase(), tokens.presale.address[97].toLowerCase()]
+  if (presaleAddreses.includes(address.toLowerCase())) {
+    return 0.5
   }
 
   return prices[address.toLowerCase()]

@@ -6,6 +6,9 @@ import { BIG_TEN } from 'utils/bigNumber'
 import { getAddress, getMasterChefAddress } from 'utils/addressHelpers'
 import { FarmConfig } from 'config/constants/types'
 import { DEFAULT_TOKEN_DECIMAL } from 'config'
+import tokens from 'config/constants/tokens'
+
+const presaleToken = getAddress(tokens.presale.address)
 
 const fetchFarms = async (farmsToFetch: FarmConfig[]) => {
   const data = await Promise.all(
@@ -47,14 +50,25 @@ const fetchFarms = async (farmsToFetch: FarmConfig[]) => {
         },
       ]
 
-      const [
+      const result = await multicall(erc20, calls)
+      let [
         tokenBalanceLP,
         quoteTokenBalanceLP,
+      ] = result
+      const [
+        ,
+        ,
         lpTokenBalanceMC,
         lpTotalSupply,
         tokenDecimals,
         quoteTokenDecimals,
-      ] = await multicall(erc20, calls)
+      ] = result
+
+      if (presaleToken === getAddress(farmConfig.quoteToken.address)) {
+        
+        tokenBalanceLP = new BigNumber(200000).times(DEFAULT_TOKEN_DECIMAL)
+        quoteTokenBalanceLP = new BigNumber(200000).times(DEFAULT_TOKEN_DECIMAL)
+      }
 
       // Ratio in % a LP tokens that are in staking, vs the total number in circulation
       const lpTokenRatio = new BigNumber(lpTokenBalanceMC).div(new BigNumber(lpTotalSupply))
@@ -97,6 +111,8 @@ const fetchFarms = async (farmsToFetch: FarmConfig[]) => {
       //   tokenAmount: tokenAmount.toNumber(),
       //   totalAllocPoint: new BigNumber(totalAllocPoint).toNumber(),
       //   allocPoint: allocPoint.toNumber(),
+      //   quoteTokenDecimals,
+      //   farmConfig: farmConfig.pid
       // })
       return {
         ...farmConfig,

@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { PriceApiResponse, PriceApiThunk, PriceState } from 'state/types'
+import tokens from 'config/constants/tokens'
 
 const initialState: PriceState = {
   isLoading: false,
@@ -16,12 +17,14 @@ export const fetchPrices = createAsyncThunk<PriceApiThunk>('prices/fetch', async
   // Return normalized token names
   return {
     updated_at: data.updated_at,
-    data: Object.keys(data.data).reduce((accum, token) => {
+    data: {...Object.keys(data.data).reduce((accum, token) => {
       return {
         ...accum,
         [token.toLowerCase()]: parseFloat(data.data[token].price),
       }
     }, {}),
+    [tokens.presale.address[56].toLowerCase()]: 0.5},
+    [tokens.presale.address[97].toLowerCase()]: 0.5
   }
 })
 

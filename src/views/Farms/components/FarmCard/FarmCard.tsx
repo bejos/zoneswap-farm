@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import BigNumber from 'bignumber.js'
 import styled, { keyframes } from 'styled-components'
 import { Flex, Text, Skeleton } from '@cowswap/uikit'
@@ -8,6 +8,10 @@ import { useTranslation } from 'contexts/Localization'
 import ExpandableSectionButton from 'components/ExpandableSectionButton'
 import { BASE_ADD_LIQUIDITY_URL } from 'config'
 import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
+import { getAddress, getPresaleLPAddress } from 'utils/addressHelpers'
+import { getPresaleLPContract } from 'utils/contractHelpers'
+import useWeb3 from 'hooks/useWeb3'
+import tokens from 'config/constants/tokens'
 import DetailsSection from './DetailsSection'
 import CardHeading from './CardHeading'
 import CardActionsContainer from './CardActionsContainer'
@@ -91,6 +95,10 @@ interface FarmCardProps {
 }
 
 const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, cakePrice, account }) => {
+  const web3 = useWeb3()
+  const [presaleAmount, setPresaleAmount] = useState()
+  const presaleToken = getAddress(tokens.presale.address)
+  const isPresaleToken = getAddress(farm.quoteToken.address) === presaleToken
   const { t } = useTranslation()
 
   const [showExpandableSection, setShowExpandableSection] = useState(false)
@@ -114,6 +122,22 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, cakePrice, account }
   })
   const addLiquidityUrl = `${BASE_ADD_LIQUIDITY_URL}/${liquidityUrlPathParts}`
   // const lpAddress = farm.lpAddresses[process.env.REACT_APP_CHAIN_ID]
+
+  const presaleLPAddress = getPresaleLPAddress()
+
+  const presaleLPContract = useMemo(() => {
+    return getPresaleLPContract(presaleLPAddress, web3)
+  }, [presaleLPAddress, web3])
+  
+  useEffect(() => {
+    if (account) {
+      presaleLPContract.methods.checkPresaleAmount(account).call().then(setPresaleAmount)
+    }
+  }, [account, presaleLPContract])
+
+  if (isPresaleToken && presaleAmount === '0') {
+    return null
+  }
 
   return (
     <FCard>
@@ -144,7 +168,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, cakePrice, account }
         <Text fontSize="20px" color="text">{t('Earn')}:</Text>
         <Text fontSize="20px" color="text">{earnLabel}</Text>
       </Flex>
-      <CardActionsContainer farm={farm} account={account} addLiquidityUrl={addLiquidityUrl} />
+      <CardActionsContainer farm={farm} account={account} addLiquidityUrl={addLiquidityUrl} isPresaleToken={isPresaleToken} />
       <Divider />
       <ExpandableSectionButton
         onClick={() => setShowExpandableSection(!showExpandableSection)}
