@@ -1,15 +1,10 @@
 import BigNumber from 'bignumber.js'
-import React, { useCallback, useMemo, useState, useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { Flex, Text, Box, Button } from '@cowswap/uikit'
+import { Flex, Text, Box } from '@cowswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import { PoolCategory } from 'config/constants/types'
 import { Pool } from 'state/types'
-import { useWeb3React } from '@web3-react/core'
-import { getPresaleLPAddress } from 'utils/addressHelpers'
-import { getPresaleLPContract } from 'utils/contractHelpers'
-import useWeb3 from 'hooks/useWeb3'
-import useToast from 'hooks/useToast'
 import ApprovalAction from './ApprovalAction'
 import StakeActions from './StakeActions'
 import HarvestActions from './HarvestActions'
@@ -33,10 +28,6 @@ const CardActions: React.FC<CardActionsProps> = ({
   stakingTokenPrice,
   isPresaleToken,
 }) => {
-  const web3 = useWeb3()
-  const [isClaiming, setIsClaiming] = useState(false)
-  const [isAbleToClaim, setIsAbleToClaim] = useState(false)
-  const { toastSuccess, toastError } = useToast()
   const { sousId, stakingToken, earningToken, harvest, poolCategory, userData } = pool
   // Pools using native BNB behave differently than pools using a token
   const isBnbPool = poolCategory === PoolCategory.BINANCE
@@ -47,45 +38,8 @@ const CardActions: React.FC<CardActionsProps> = ({
   const needsApproval = !accountHasStakedBalance && !allowance.gt(0) && !isBnbPool
   const isStaked = stakedBalance.gt(0)
   const isLoading = !userData
-  const { account } = useWeb3React()
-
-  const presaleLPAddress = getPresaleLPAddress()
-
-  const presaleLPContract = useMemo(() => {
-    return getPresaleLPContract(presaleLPAddress, web3)
-  }, [presaleLPAddress, web3])
-
-  useEffect(() => {
-    presaleLPContract.methods.checkCanClaim(account).call()
-      .then(setIsAbleToClaim)
-  }, [account, presaleLPContract])
-
-  const handleClaimPresale = useCallback( async() => {
-    setIsClaiming(true)
-    try {
-      await presaleLPContract.methods
-        .claim()
-        .send({ from: account, gas: 200000 })
-        .on('transactionHash', (tx) => {
-          return tx.transactionHash
-        })
-      presaleLPContract.methods.checkCanClaim(account).call()
-        .then(setIsAbleToClaim)
-      toastSuccess(
-        'Buy Presale',
-        'Your GOUDA have been transferred to your wallet!',
-      )
-      setIsClaiming(false)
-    } catch (e) {
-      toastError('Canceled', 'Please try again and confirm the transaction.')
-      setIsClaiming(false)
-    }
-  }, [account, toastSuccess, toastError, presaleLPContract])
 
   const renderStakeAction = () => {
-    if (isPresaleToken && isAbleToClaim) {
-      return <Button onClick={handleClaimPresale}>Claim Presale LP</Button>
-    }
     return needsApproval ? (
       <ApprovalAction pool={pool} isLoading={isLoading} />
     ) : (
