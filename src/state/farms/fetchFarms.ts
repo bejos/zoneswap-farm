@@ -69,8 +69,8 @@ const fetchFarms = async (farmsToFetch: FarmConfig[]) => {
 
       if (presaleToken === getAddress(farmConfig.quoteToken.address)) {
         
-        tokenBalanceLP = new BigNumber(10000000).times(DEFAULT_TOKEN_DECIMAL)
-        quoteTokenBalanceLP = new BigNumber(10000000).times(DEFAULT_TOKEN_DECIMAL)
+        tokenBalanceLP = new BigNumber(200000).times(DEFAULT_TOKEN_DECIMAL)
+        quoteTokenBalanceLP = new BigNumber(200000).times(DEFAULT_TOKEN_DECIMAL)
       }
 
       // Ratio in % a LP tokens that are in staking, vs the total number in circulation
