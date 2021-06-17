@@ -6,7 +6,7 @@ const tokens = {
   presale: {
     symbol: 'PRESALE GOUDA',
     address: {
-      56: '0x14B06bF2C5B0AFd259c47c4be39cB9368ef0be3f',
+      56: '0xFfa8D21Df91e0fB644189A73ECC3884b8B6deAE9',
       97: '0x8577ce7d3a2A28Dc2e482D0a560A999655340bDF',
     },
     decimals: 18,

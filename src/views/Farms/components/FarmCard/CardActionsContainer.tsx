@@ -105,7 +105,7 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
 
   const renderApprovalOrStakeButton = () => {
     if (isPresaleToken && isAbleToClaim) {
-      return <Button disabled={isClaiming} onClick={handleClaimPresale}>{isClaiming ? 'Claiming' : 'Claim Presale LP'}</Button>
+      return <Button mt="8px" disabled={isClaiming} onClick={handleClaimPresale}>{isClaiming ? 'Claiming' : 'Claim Presale LP'}</Button>
     }
 
     return isApproved ? (

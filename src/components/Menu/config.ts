@@ -13,10 +13,6 @@ const config: MenuEntry[] = [
     label: 'Presale',
     icon: 'PresaleIcon',
     href: isMainnet ? '/presale' : '/',
-    status: {
-      text: "LIVE",
-      color: "failure",
-    },
   },
   {
     label: 'Lucky draw',
@@ -47,21 +43,19 @@ const config: MenuEntry[] = [
   {
     label: 'Farms',
     icon: 'FarmIcon',
-    href: isMainnet ? '/' : '/farms',
-    // href: '/farms',
+    href: '/farms',
     status: {
-      text: 'COMING',
-      color: 'warning',
+      text: "LIVE",
+      color: "failure",
     },
   },
   {
     label: 'Pools',
     icon: 'PoolIcon',
-    href: isMainnet ? '/' : '/pools',
-    // href: '/pools',
+    href: '/pools',
     status: {
-      text: 'COMING',
-      color: 'warning',
+      text: "LIVE",
+      color: "failure",
     },
   },
   // {
