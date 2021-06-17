@@ -25,13 +25,11 @@ const config: MenuEntry[] = [
     items: [
       {
         label: 'Exchange',
-        href: isMainnet ? '/' : 'https://exchange-testnet.cowswap.app/#/swap',
-        // href: 'https://exchange.cowswap.app/#/swap',
+        href: isMainnet ? 'https://exchange.cowswap.app/#/swap' : 'https://exchange-testnet.cowswap.app/#/swap',
       },
       {
         label: 'Liquidity',
-        href: isMainnet ? '/' : 'https://exchange-testnet.cowswap.app/#/pool',
-        // href: 'https://exchange.cowswap.app/#/pool',
+        href: isMainnet ? 'https://exchange.cowswap.app/#/pool' : 'https://exchange-testnet.cowswap.app/#/pool',
       },
     ],
   },
