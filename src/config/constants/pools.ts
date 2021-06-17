@@ -10,7 +10,7 @@ const pools: PoolConfig[] = [
     earningToken: tokens.cow,
     contractAddress: {
       97: getAddress(contracts.masterChef),
-      56: '0x73feaa1eE314F8c655E354234017bE2193C9E24E',
+      56: getAddress(contracts.masterChef),
     },
     poolCategory: PoolCategory.CORE,
     harvest: true,
