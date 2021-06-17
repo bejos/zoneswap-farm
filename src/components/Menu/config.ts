@@ -14,11 +14,6 @@ const config: MenuEntry[] = [
     icon: 'PresaleIcon',
     href: isMainnet ? '/presale' : '/',
   },
-  {
-    label: 'Lucky draw',
-    icon: 'LuckyDrawIcon',
-    href: '/luckydraw',
-  },
   // {
   //   label: 'Airdrop',
   //   icon: 'AirdropIcon',

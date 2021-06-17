@@ -172,7 +172,6 @@ export const useGetApiPrices = () => {
 export const useGetApiPrice = (address: string) => {
   const prices = useGetApiPrices()
   const cakePriceBusd = usePriceCakeBusd()
-  console.log(address)
   if (!prices) {
     return null
   }
