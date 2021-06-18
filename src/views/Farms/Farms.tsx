@@ -3,64 +3,19 @@ import { Route, useRouteMatch, useLocation } from 'react-router-dom'
 import { useAppDispatch } from 'state'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
-import { RowType } from '@cowswap/uikit'
 import styled from 'styled-components'
 import FlexLayout from 'components/layout/Flex'
 import Page from 'components/layout/Page'
 import { useFarms, usePriceCakeBusd, useGetApiPrices } from 'state/hooks'
 import useRefresh from 'hooks/useRefresh'
 import { fetchFarmUserDataAsync } from 'state/actions'
-import usePersistState from 'hooks/usePersistState'
 import { Farm } from 'state/types'
-import { getBalanceNumber } from 'utils/formatBalance'
 import { getFarmApr } from 'utils/apr'
 import { getAddress } from 'utils/addressHelpers'
 import isArchivedPid from 'utils/farmHelpers'
 import { fetchFarmsPublicDataAsync, setLoadArchivedFarmsData } from 'state/farms'
 import FarmCard, { FarmWithStakedValue } from './components/FarmCard/FarmCard'
-import Table from './components/FarmTable/FarmTable'
-import { RowProps } from './components/FarmTable/Row'
-import ToggleView from './components/ToggleView/ToggleView'
-import { DesktopColumnSchema, ViewMode } from './components/types'
 
-const ControlContainer = styled.div`
-  display: flex;
-  width: 100%;
-  align-items: center;
-  position: relative;
-
-  justify-content: space-between;
-  flex-direction: column;
-  margin-bottom: 32px;
-
-  ${({ theme }) => theme.mediaQueries.sm} {
-    flex-direction: row;
-    flex-wrap: wrap;
-    padding: 16px 32px;
-    margin-bottom: 0;
-  }
-`
-
-const ViewControls = styled.div`
-  flex-wrap: wrap;
-  justify-content: space-between;
-  display: flex;
-  align-items: center;
-  width: 100%;
-
-  > div {
-    padding: 8px 0px;
-  }
-
-  ${({ theme }) => theme.mediaQueries.sm} {
-    justify-content: flex-start;
-    width: auto;
-
-    > div {
-      padding: 0;
-    }
-  }
-`
 
 const StyledImage = styled.img`
   margin-left: auto;
@@ -78,7 +33,7 @@ const Farms: React.FC = () => {
   const { pathname } = useLocation()
   const { data: farmsLP, userDataLoaded } = useFarms()
   const cakePrice = usePriceCakeBusd()
-  const [viewMode, setViewMode] = usePersistState(ViewMode.CARD, 'pancake_farm_view')
+  // const [viewMode, setViewMode] = usePersistState(ViewMode.CARD, 'pancake_farm_view')
   const { account } = useWeb3React()
   const prices = useGetApiPrices()
   const dispatch = useAppDispatch()
@@ -95,7 +50,7 @@ const Farms: React.FC = () => {
 
   // Users with no wallet connected should see 0 as Earned amount
   // Connected users should see loading indicator until first userData has loaded
-  const userDataReady = !account || (!!account && userDataLoaded)
+  // const userDataReady = !account || (!!account && userDataLoaded)
 
   const [stakedOnly, setStakedOnly] = useState(!isActive)
   useEffect(() => {
@@ -202,75 +157,10 @@ const Farms: React.FC = () => {
     }
   }, [farmsStakedMemoized, observerIsSet])
 
-  const rowData = farmsStakedMemoized.map((farm) => {
-    const { token, quoteToken } = farm
-    const tokenAddress = token.address
-    const quoteTokenAddress = quoteToken.address
-    const lpLabel = farm.lpSymbol && farm.lpSymbol.split(' ')[0].toUpperCase().replace('PANCAKE', '')
-
-    const row: RowProps = {
-      apr: {
-        value: farm.apr && farm.apr.toLocaleString('en-US', { maximumFractionDigits: 2 }),
-        multiplier: farm.multiplier,
-        lpLabel,
-        tokenAddress,
-        quoteTokenAddress,
-        cakePrice,
-        originalValue: farm.apr,
-      },
-      farm: {
-        image: farm.lpSymbol.split(' ')[0].toLocaleLowerCase(),
-        label: lpLabel,
-        pid: farm.pid,
-      },
-      earned: {
-        earnings: getBalanceNumber(new BigNumber(farm.userData.earnings)),
-        pid: farm.pid,
-      },
-      liquidity: {
-        liquidity: farm.liquidity,
-      },
-      multiplier: {
-        multiplier: farm.multiplier,
-      },
-      details: farm,
-    }
-
-    return row
-  })
-
   const renderContent = (): JSX.Element => {
-    if (viewMode === ViewMode.TABLE && rowData.length) {
-      const columnSchema = DesktopColumnSchema
-
-      const columns = columnSchema.map((column) => ({
-        id: column.id,
-        name: column.name,
-        label: column.label,
-        sort: (a: RowType<RowProps>, b: RowType<RowProps>) => {
-          switch (column.name) {
-            case 'farm':
-              return b.id - a.id
-            case 'apr':
-              if (a.original.apr.value && b.original.apr.value) {
-                return Number(a.original.apr.value) - Number(b.original.apr.value)
-              }
-
-              return 0
-            case 'earned':
-              return a.original.earned.earnings - b.original.earned.earnings
-            default:
-              return 1
-          }
-        },
-        sortable: column.sortable,
-      }))
-
-      return <Table data={rowData} columns={columns} userDataReady={userDataReady} />
-    }
 
     return (
-      <div>
+      <div style={{ marginTop: 50 }}>
         <FlexLayout>
           <Route exact path={`${path}`}>
             {farmsStakedMemoized.map((farm) => (
@@ -295,14 +185,8 @@ const Farms: React.FC = () => {
   return (
     <>
       <Page>
-        <ControlContainer>
-          <ViewControls>
-            <ToggleView viewMode={viewMode} onToggle={(mode: ViewMode) => setViewMode(mode)} />
-          </ViewControls>
-        </ControlContainer>
         {renderContent()}
         <div ref={loadMoreRef} />
-        {/* <StyledImage src="/images/green-field.svg" alt="cowswap illustration" width="100%" height={333} responsive /> */}
       </Page>
       <StyledImage src="/images/green-field.svg" />
     </>
