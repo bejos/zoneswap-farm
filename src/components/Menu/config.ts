@@ -83,25 +83,25 @@ const config: MenuEntry[] = [
       color: 'warning',
     },
   },
-  {
-    label: 'Teams & Profile',
-    icon: 'GroupsIcon',
-    href: '/',
-    // items: [
-    //   {
-    //     label: 'Leaderboard',
-    //     href: '/teams',
-    //   },
-    //   {
-    //     label: 'Task Center',
-    //     href: '/profile/tasks',
-    //   },
-    //   {
-    //     label: 'Your Profile',
-    //     href: '/profile',
-    //   },
-    // ],
-  },
+  // {
+  //   label: 'Teams & Profile',
+  //   icon: 'GroupsIcon',
+  //   href: '/',
+  //   // items: [
+  //   //   {
+  //   //     label: 'Leaderboard',
+  //   //     href: '/teams',
+  //   //   },
+  //   //   {
+  //   //     label: 'Task Center',
+  //   //     href: '/profile/tasks',
+  //   //   },
+  //   //   {
+  //   //     label: 'Your Profile',
+  //   //     href: '/profile',
+  //   //   },
+  //   // ],
+  // },
   {
     label: 'Info',
     icon: 'InfoIcon',
@@ -125,15 +125,15 @@ const config: MenuEntry[] = [
     //   },
     // ],
   },
-  {
-    label: 'IFO',
-    icon: 'IfoIcon',
-    href: '/',
-    status: {
-      text: 'COMING',
-      color: 'warning',
-    },
-  },
+  // {
+  //   label: 'IFO',
+  //   icon: 'IfoIcon',
+  //   href: '/',
+  //   status: {
+  //     text: 'COMING',
+  //     color: 'warning',
+  //   },
+  // },
   {
     label: 'More',
     icon: 'MoreIcon',
@@ -158,6 +158,10 @@ const config: MenuEntry[] = [
       {
         label: 'Gouda Contract',
         href: `${BASE_BSC_SCAN_URL}/address/${getAddress(tokens.cow.address)}`,
+      },
+      {
+        label: 'Audit',
+        href: 'https://github.com/TechRate/Smart-Contract-Audits/blob/main/GoudaToken%20Full%20Smart%20Contract%20Security%20Audit.pdf',
       },
     ],
   },
