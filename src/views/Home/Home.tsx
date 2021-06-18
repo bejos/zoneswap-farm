@@ -37,7 +37,7 @@ const ShareBtnStyled = styled.div`
 `
 
 const TwitterStyled = styled.div`
-  width: 80%;
+  width: 100%;
   ${({ theme }) => theme.mediaQueries.sm} {
     & > div {
       grid-column: span 8;
@@ -155,7 +155,7 @@ const Home: React.FC = () => {
                   noHeader
                   placeholder="Loading..."
                   options={{ height: 550 }}
-                  style={{ width: "100%"}}
+                  style={{ width: "90%"}}
                 />
               </TwitterStyled>
               <ShareBtnStyled>
