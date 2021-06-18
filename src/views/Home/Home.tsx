@@ -74,26 +74,48 @@ const Cards = styled(BaseLayout)`
   }
 `
 
-// const CTACards = styled(BaseLayout)`
-//   align-items: start;
-//   margin-bottom: 32px;
+const FlexColumn = styled(Cards)`
+  ${({ theme }) => theme.mediaQueries.lg} {
+    display: grid;
 
-//   & > div {
-//     grid-column: span 6;
-//   }
+    & > div:first-child {
+      grid-column: span 5;
+      margin-bottom: 30px
+    }
 
-//   ${({ theme }) => theme.mediaQueries.sm} {
-//     & > div {
-//       grid-column: span 8;
-//     }
-//   }
+    & > div:last-child {
+      grid-column: span 7 !important;
+    }
+  }
 
-//   ${({ theme }) => theme.mediaQueries.lg} {
-//     & > div {
-//       grid-column: span 4;
-//     }
-//   }
-// `
+  ${({ theme }) => theme.mediaQueries.xl} {
+    display: flex;
+    flex-direction: column;
+    grid-gap: 0px;
+    margin-bottom: 0px;
+  }
+`
+
+const CTACards = styled(BaseLayout)`
+  align-items: start;
+  margin-bottom: 32px;
+
+  & > div {
+    grid-column: span 6;
+  }
+
+  ${({ theme }) => theme.mediaQueries.sm} {
+    & > div {
+      grid-column: span 8;
+    }
+  }
+
+  ${({ theme }) => theme.mediaQueries.lg} {
+    & > div {
+      grid-column: span 4;
+    }
+  }
+`
 
 const Home: React.FC = () => {
 
@@ -117,8 +139,12 @@ const Home: React.FC = () => {
       </Hero> */}
       <div>
         <Cards>
-          <FarmStakingCard />
+          {/* <FarmStakingCard /> */}
           {/* <LotteryCard /> */}
+          <FlexColumn>
+            <FarmStakingCard />
+            <CakeStats />
+          </FlexColumn>
           <Card>
             <CardBody>
               <TwitterStyled>
@@ -128,7 +154,7 @@ const Home: React.FC = () => {
                   noFooter
                   noHeader
                   placeholder="Loading..."
-                  options={{ height: 450 }}
+                  options={{ height: 550 }}
                   style={{ width: "100%"}}
                 />
               </TwitterStyled>
@@ -138,10 +164,17 @@ const Home: React.FC = () => {
             </CardBody>
           </Card>
         </Cards>
-        <Cards>
-          <CakeStats />
+        {/* <Cards>
+          <CakeStats /> */}
           {/* <TotalValueLockedCard /> */}
-        </Cards>
+        {/* </Cards> */}
+        {/* <Card>
+          <CTACards>
+            <FarmStakingCard />
+            <CakeStats />
+          </CTACards>
+        </Card> */}
+        
         {/* <CTACards>
           <EarnAPRCard />
           <EarnAssetCard />
