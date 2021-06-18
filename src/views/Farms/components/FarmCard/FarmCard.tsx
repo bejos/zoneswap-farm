@@ -120,7 +120,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, cakePrice, account }
     quoteTokenAddress: farm.quoteToken.address,
     tokenAddress: farm.token.address,
   })
-  const addLiquidityUrl = `${BASE_ADD_LIQUIDITY_URL}/${liquidityUrlPathParts}`
+  const addLiquidityUrl = !isPresaleToken ? `${BASE_ADD_LIQUIDITY_URL}/${liquidityUrlPathParts}` : BASE_ADD_LIQUIDITY_URL
   // const lpAddress = farm.lpAddresses[process.env.REACT_APP_CHAIN_ID]
 
   const presaleLPAddress = getPresaleLPAddress()

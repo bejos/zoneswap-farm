@@ -1,12 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useTranslation } from 'contexts/Localization'
+import { BaseLayout, CardBody, Card } from '@cowswap/uikit'
+// import { useTranslation } from 'contexts/Localization'
 import Page from 'components/layout/Page'
 import { TwitterTimelineEmbed, TwitterFollowButton } from 'react-twitter-embed';
-// import FarmStakingCard from 'views/Home/components/FarmStakingCard'
+import FarmStakingCard from 'views/Home/components/FarmStakingCard'
 // import LotteryCard from 'views/Home/components/LotteryCard'
-// import CakeStats from 'views/Home/components/CakeStats'
-// import TotalValueLockedCard from 'views/Home/components/TotalValueLockedCard'
+import CakeStats from 'views/Home/components/CakeStats'
+import TotalValueLockedCard from 'views/Home/components/TotalValueLockedCard'
 // import EarnAPRCard from 'views/Home/components/EarnAPRCard'
 // import EarnAssetCard from 'views/Home/components/EarnAssetCard'
 // import WinCard from 'views/Home/components/WinCard'
@@ -50,28 +51,28 @@ const TwitterStyled = styled.div`
   }
 `
 
-// const Cards = styled(BaseLayout)`
-//   align-items: stretch;
-//   justify-content: stretch;
-//   margin-bottom: 32px;
+const Cards = styled(BaseLayout)`
+  align-items: stretch;
+  justify-content: stretch;
+  margin-bottom: 32px;
 
-//   & > div {
-//     grid-column: span 6;
-//     width: 100%;
-//   }
+  & > div {
+    grid-column: span 6;
+    width: 100%;
+  }
 
-//   ${({ theme }) => theme.mediaQueries.sm} {
-//     & > div {
-//       grid-column: span 8;
-//     }
-//   }
+  ${({ theme }) => theme.mediaQueries.sm} {
+    & > div {
+      grid-column: span 8;
+    }
+  }
 
-//   ${({ theme }) => theme.mediaQueries.lg} {
-//     & > div {
-//       grid-column: span 6;
-//     }
-//   }
-// `
+  ${({ theme }) => theme.mediaQueries.lg} {
+    & > div {
+      grid-column: span 6;
+    }
+  }
+`
 
 // const CTACards = styled(BaseLayout)`
 //   align-items: start;
@@ -98,7 +99,7 @@ const Home: React.FC = () => {
 
   return (
     <Page>
-      <Hero>
+      {/* <Hero>
         <TwitterStyled>
           <TwitterTimelineEmbed
             sourceType="profile"
@@ -113,13 +114,35 @@ const Home: React.FC = () => {
         <ShareBtnStyled>
           <TwitterFollowButton screenName="cowswap_finance" options={{size: 'large'}} />
         </ShareBtnStyled>
-      </Hero>
-      {/* <div>
+      </Hero> */}
+      <div>
         <Cards>
           <FarmStakingCard />
-          <LotteryCard />
+          {/* <LotteryCard /> */}
+          <Card>
+            <CardBody>
+              <TwitterStyled>
+                <TwitterTimelineEmbed
+                  sourceType="profile"
+                  screenName="cowswap_finance"
+                  noFooter
+                  noHeader
+                  placeholder="Loading..."
+                  options={{ height: 450 }}
+                  style={{ width: "100%"}}
+                />
+              </TwitterStyled>
+              <ShareBtnStyled>
+                <TwitterFollowButton screenName="cowswap_finance" options={{size: 'large'}} />
+              </ShareBtnStyled>
+            </CardBody>
+          </Card>
         </Cards>
-        <CTACards>
+        <Cards>
+          <CakeStats />
+          {/* <TotalValueLockedCard /> */}
+        </Cards>
+        {/* <CTACards>
           <EarnAPRCard />
           <EarnAssetCard />
           <WinCard />
@@ -127,8 +150,8 @@ const Home: React.FC = () => {
         <Cards>
           <CakeStats />
           <TotalValueLockedCard />
-        </Cards>
-      </div> */}
+        </Cards> */}
+      </div>
     </Page>
   )
 }
