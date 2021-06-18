@@ -10,6 +10,7 @@ export interface ExpandableSectionProps {
   totalValueFormatted?: string
   lpLabel?: string
   addLiquidityUrl?: string
+  isPresaleToken?: boolean
 }
 
 const Wrapper = styled.div`
@@ -27,6 +28,7 @@ const DetailsSection: React.FC<ExpandableSectionProps> = ({
   totalValueFormatted,
   lpLabel,
   addLiquidityUrl,
+  isPresaleToken,
 }) => {
   const { t } = useTranslation()
 
@@ -36,7 +38,7 @@ const DetailsSection: React.FC<ExpandableSectionProps> = ({
         <Text color="text">{t('Total Liquidity')}:</Text>
         <Text color="text">{totalValueFormatted}</Text>
       </Flex>
-      {!removed && (
+      {!removed && !isPresaleToken && (
         <StyledLinkExternal color="textSubtle" href={addLiquidityUrl}>{t(`Get ${lpLabel}`, { name: lpLabel })}</StyledLinkExternal>
       )}
       <StyledLinkExternal color="text" href={bscScanAddress}>{t('View Contract')}</StyledLinkExternal>

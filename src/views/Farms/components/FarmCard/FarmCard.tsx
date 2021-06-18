@@ -176,6 +176,7 @@ const FarmCard: React.FC<FarmCardProps> = ({ farm, removed, cakePrice, account }
       />
       <ExpandingWrapper expanded={showExpandableSection}>
         <DetailsSection
+          isPresaleToken={isPresaleToken}
           removed={removed}
           bscScanAddress={`https://bscscan.com/address/${farm.lpAddresses[process.env.REACT_APP_CHAIN_ID]}`}
           infoAddress='/'
