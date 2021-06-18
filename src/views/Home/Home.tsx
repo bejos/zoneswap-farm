@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Heading, Text } from '@cowswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import Page from 'components/layout/Page'
 import { TwitterTimelineEmbed, TwitterFollowButton } from 'react-twitter-embed';
@@ -96,15 +95,10 @@ const TwitterStyled = styled.div`
 // `
 
 const Home: React.FC = () => {
-  const { t } = useTranslation()
 
   return (
     <Page>
       <Hero>
-        <Heading as="h1" size="xl" mb="24px" color="secondary">
-          {t('Coming Soon')}
-        </Heading>
-        <Text mb="24px">{t('We will be celebrating the launch of our new site very soon')}</Text>
         <TwitterStyled>
           <TwitterTimelineEmbed
             sourceType="profile"
