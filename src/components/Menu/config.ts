@@ -22,10 +22,6 @@ const config: MenuEntry[] = [
   {
     label: 'Trade',
     icon: 'TradeIcon',
-    status: {
-      text: "LIVE",
-      color: "failure",
-    },
     items: [
       {
         label: 'Exchange',
@@ -41,19 +37,11 @@ const config: MenuEntry[] = [
     label: 'Farms',
     icon: 'FarmIcon',
     href: '/farms',
-    status: {
-      text: "LIVE",
-      color: "failure",
-    },
   },
   {
     label: 'Pools',
     icon: 'PoolIcon',
     href: '/pools',
-    status: {
-      text: "LIVE",
-      color: "failure",
-    },
   },
   // {
   //   label: 'Prediction',
