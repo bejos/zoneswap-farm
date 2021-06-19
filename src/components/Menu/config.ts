@@ -104,7 +104,7 @@ const config: MenuEntry[] = [
         href: 'https://pancakeswap.info/pool/0x7b4b7bb3d157e38c1497d894ccc1946715128ac2',
       },
       {
-        label: 'poocoin',
+        label: 'Poocoin',
         href: 'https://poocoin.app/tokens/0x14b06bf2c5b0afd259c47c4be39cb9368ef0be3f',
       },
     ],
