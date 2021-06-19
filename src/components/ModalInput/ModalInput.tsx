@@ -12,6 +12,7 @@ interface ModalInputProps {
   value: string
   addLiquidityUrl?: string
   inputTitle?: string
+  isPresaleToken?: boolean
 }
 
 const getBoxShadow = ({ isWarning = false, theme }) => {
@@ -64,6 +65,7 @@ const ModalInput: React.FC<ModalInputProps> = ({
   value,
   addLiquidityUrl,
   inputTitle,
+  isPresaleToken,
 }) => {
   const { t } = useTranslation()
   const isBalanceZero = max === '0' || !max
@@ -104,7 +106,7 @@ const ModalInput: React.FC<ModalInputProps> = ({
           <Text fontSize="16px">{symbol}</Text>
         </Flex>
       </StyledTokenInput>
-      {isBalanceZero && (
+      {isBalanceZero && !isPresaleToken && (
         <StyledErrorMessage fontSize="14px" color="failure">
           No tokens to stake:{' '}
           <Link fontSize="14px" bold={false} href={addLiquidityUrl} external color="failure">

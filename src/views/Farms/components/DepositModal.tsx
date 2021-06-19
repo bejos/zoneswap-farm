@@ -12,9 +12,10 @@ interface DepositModalProps {
   onDismiss?: () => void
   tokenName?: string
   addLiquidityUrl?: string
+  isPresaleToken?: boolean
 }
 
-const DepositModal: React.FC<DepositModalProps> = ({ max, onConfirm, onDismiss, tokenName = '', addLiquidityUrl }) => {
+const DepositModal: React.FC<DepositModalProps> = ({ max, onConfirm, onDismiss, tokenName = '', addLiquidityUrl, isPresaleToken }) => {
   const [val, setVal] = useState('')
   const [pendingTx, setPendingTx] = useState(false)
   const { t } = useTranslation()
@@ -48,6 +49,7 @@ const DepositModal: React.FC<DepositModalProps> = ({ max, onConfirm, onDismiss, 
         symbol={tokenName}
         addLiquidityUrl={addLiquidityUrl}
         inputTitle={t('Stake')}
+        isPresaleToken={isPresaleToken}
       />
       <ModalActions>
         <Button variant="secondary" onClick={onDismiss} width="100%" disabled={pendingTx}>
@@ -66,9 +68,9 @@ const DepositModal: React.FC<DepositModalProps> = ({ max, onConfirm, onDismiss, 
           {pendingTx ? t('Pending Confirmation') : t('Confirm')}
         </Button>
       </ModalActions>
-      <LinkExternal href={addLiquidityUrl} style={{ alignSelf: 'center' }}>
+      {!isPresaleToken ? <LinkExternal href={addLiquidityUrl} style={{ alignSelf: 'center' }}>
         {t('Get')} {tokenName}
-      </LinkExternal>
+      </LinkExternal> : null}
     </Modal>
   )
 }

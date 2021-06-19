@@ -115,6 +115,7 @@ const CardActions: React.FC<FarmCardActionsProps> = ({ farm, account, addLiquidi
         tokenName={lpName}
         pid={pid}
         addLiquidityUrl={addLiquidityUrl}
+        isPresaleToken={isPresaleToken}
       />
     ) : (
       <Button

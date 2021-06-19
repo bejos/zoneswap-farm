@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, CardBody, Heading, Text } from '@cowswap/uikit'
 import styled from 'styled-components'
 import { getBalanceNumber } from 'utils/formatBalance'
 import { useTotalSupply, useBurnedBalance } from 'hooks/useTokenBalance'
 import { useTranslation } from 'contexts/Localization'
 import { getCakeAddress } from 'utils/addressHelpers'
+import { useMasterchef } from 'hooks/useContract'
 import CardValue from './CardValue'
 
 const StyledCakeStats = styled(Card)`
@@ -21,10 +22,16 @@ const Row = styled.div`
 `
 
 const CakeStats = () => {
+  const [newGoudaPerBlock, setNewGoudaPerBlock] = useState(0)
   const { t } = useTranslation()
   const totalSupply = useTotalSupply()
+  const masterChefContract = useMasterchef()
   const burnedBalance = getBalanceNumber(useBurnedBalance(getCakeAddress()))
   const cakeSupply = totalSupply ? getBalanceNumber(totalSupply) - burnedBalance : 0
+
+  useEffect(() => {
+    masterChefContract.methods.BONUS_MULTIPLIER().call().then(setNewGoudaPerBlock)
+  }, [masterChefContract])
 
   return (
     <StyledCakeStats>
@@ -42,7 +49,7 @@ const CakeStats = () => {
         </Row>
         <Row>
           <Text fontSize="14px">{t('New GOUDA/block')}</Text>
-          <CardValue fontSize="14px" decimals={0} value={1} />
+          <CardValue fontSize="14px" decimals={0} value={newGoudaPerBlock} />
         </Row>
       </CardBody>
     </StyledCakeStats>
