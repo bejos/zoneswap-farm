@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import BigNumber from 'bignumber.js'
 import erc20ABI from 'config/abi/erc20.json'
 import masterchefABI from 'config/abi/masterchef.json'

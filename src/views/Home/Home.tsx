@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { BaseLayout, CardBody, Card } from '@cowswap/uikit'
-// import { useTranslation } from 'contexts/Localization'
+import { BaseLayout, CardBody, Card, Text, Heading } from '@cowswap/uikit'
 import Page from 'components/layout/Page'
 import { TwitterTimelineEmbed, TwitterFollowButton } from 'react-twitter-embed';
 import FarmStakingCard from 'views/Home/components/FarmStakingCard'
@@ -11,25 +10,8 @@ import TotalValueLockedCard from 'views/Home/components/TotalValueLockedCard'
 // import EarnAPRCard from 'views/Home/components/EarnAPRCard'
 // import EarnAssetCard from 'views/Home/components/EarnAssetCard'
 // import WinCard from 'views/Home/components/WinCard'
-
-const Hero = styled.div`
-  align-items: center;
-  background-repeat: no-repeat;
-  background-position: top center;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  margin: auto;
-  margin-bottom: 32px;
-  padding-top: 116px;
-  text-align: center;
-
-  ${({ theme }) => theme.mediaQueries.lg} {
-    background-position: left center, right center;
-    height: auto;
-    padding-top: 0;
-  }
-`
+import cowSrc from './images/cow.png'
+import goudaSrc from './images/gouda.png'
 
 const ShareBtnStyled = styled.div`
   margin-top: 15px;
@@ -96,65 +78,40 @@ const FlexColumn = styled(Cards)`
   }
 `
 
-const CTACards = styled(BaseLayout)`
-  align-items: start;
-  margin-bottom: 32px;
-
-  & > div {
-    grid-column: span 6;
-  }
-
-  ${({ theme }) => theme.mediaQueries.sm} {
-    & > div {
-      grid-column: span 8;
-    }
-  }
-
-  ${({ theme }) => theme.mediaQueries.lg} {
-    & > div {
-      grid-column: span 4;
-    }
-  }
-`
-
 const Home: React.FC = () => {
 
   return (
     <Page>
-      {/* <Hero>
-        <TwitterStyled>
-          <TwitterTimelineEmbed
-            sourceType="profile"
-            screenName="cowswap_finance"
-            noFooter
-            noHeader
-            placeholder="Loading..."
-            options={{ height: 450 }}
-            style={{ width: "80%"}}
-          />
-        </TwitterStyled>
-        <ShareBtnStyled>
-          <TwitterFollowButton screenName="cowswap_finance" options={{size: 'large'}} />
-        </ShareBtnStyled>
-      </Hero> */}
       <div>
         <Cards>
-          {/* <FarmStakingCard /> */}
-          {/* <LotteryCard /> */}
           <FlexColumn>
+            <Card>
+              <div style={{ display: 'flex' }}>
+                <div>
+                  <img style={{ marginLeft: 15, marginTop: 15 }} src={cowSrc} alt="cowswap" />
+                </div>
+                <div style={{ width: '50%', marginLeft: 25, marginTop: 15 }}>
+                  <Heading size="xl" mb="24px">Welcome All</Heading>
+                  <Text color="#323063">Why be a human, when you can be an cow :)) ?</Text>
+                </div>
+                <div>
+                  <img style={{ marginLeft: 5, marginTop: 70 }} src={goudaSrc} alt="cowswap" />
+                </div>
+              </div>
+            </Card>
             <FarmStakingCard />
-            <CakeStats />
           </FlexColumn>
           <Card>
             <CardBody>
               <TwitterStyled>
                 <TwitterTimelineEmbed
+                  borderColor="#4CAF50"
                   sourceType="profile"
                   screenName="cowswap_finance"
                   noFooter
                   noHeader
                   placeholder="Loading..."
-                  options={{ height: 550 }}
+                  options={{ height: 500 }}
                   style={{ width: "90%"}}
                 />
               </TwitterStyled>
@@ -164,26 +121,10 @@ const Home: React.FC = () => {
             </CardBody>
           </Card>
         </Cards>
-        {/* <Cards>
-          <CakeStats /> */}
-          {/* <TotalValueLockedCard /> */}
-        {/* </Cards> */}
-        {/* <Card>
-          <CTACards>
-            <FarmStakingCard />
-            <CakeStats />
-          </CTACards>
-        </Card> */}
-        
-        {/* <CTACards>
-          <EarnAPRCard />
-          <EarnAssetCard />
-          <WinCard />
-        </CTACards>
         <Cards>
           <CakeStats />
           <TotalValueLockedCard />
-        </Cards> */}
+        </Cards>
       </div>
     </Page>
   )

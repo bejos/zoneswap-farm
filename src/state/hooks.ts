@@ -12,6 +12,7 @@ import { getAddress, isMainnet } from 'utils/addressHelpers'
 import { getBalanceNumber } from 'utils/formatBalance'
 import { BIG_ZERO } from 'utils/bigNumber'
 import useRefresh from 'hooks/useRefresh'
+import { DEFAULT_TOKEN_DECIMAL } from 'config'
 import { fetchFarmsPublicDataAsync, fetchPoolsPublicDataAsync, fetchPoolsUserDataAsync, setBlock } from './actions'
 import { State, Farm, Pool, ProfileState, TeamsState, AchievementState, PriceState, FarmsState } from './types'
 import { fetchProfile } from './profile'
@@ -167,6 +168,36 @@ export const useFetchPriceList = () => {
 export const useGetApiPrices = () => {
   const prices: PriceState['data'] = useSelector((state: State) => state.prices.data)
   return prices
+}
+
+// TVL
+export const useTvl = (): BigNumber => {
+  const farms = useSelector((state: State) => state.farms)
+  const pools = useSelector((state: State) => state.pools)
+  const prices = useGetApiPrices()
+  const goudaPriceBUSD = usePriceCakeBusd()
+  let valueLocked = new BigNumber(0)
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const pool of pools.data) {
+    if (pool.stakingToken.symbol === 'GOUDA') {
+      valueLocked = valueLocked.plus(
+        new BigNumber(pool.totalStaked).times(goudaPriceBUSD),
+      )
+    }
+  }
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const farm of farms.data) {
+    if (farm.token.symbol === 'GOUDA') {
+      const quoteTokenPriceUsd = prices ? prices[getAddress(farm.quoteToken.address, "56").toLowerCase()] : BIG_ZERO
+      const totalLiquidity = new BigNumber(farm.lpTotalInQuoteToken).times(quoteTokenPriceUsd)
+      valueLocked = valueLocked.plus(
+        new BigNumber(totalLiquidity).times(goudaPriceBUSD),
+      )
+    }
+  }
+  return valueLocked.div(DEFAULT_TOKEN_DECIMAL)
 }
 
 export const useGetApiPrice = (address: string) => {

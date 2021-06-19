@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Card, CardBody, Heading, Skeleton, Text } from '@pancakeswap-libs/uikit'
+import { Card, CardBody, Heading, Skeleton, Text } from '@cowswap/uikit'
 import { useTranslation } from 'contexts/Localization'
-import { useGetStats } from 'hooks/api'
+import { useTvl } from 'state/hooks'
 
 const StyledTotalValueLockedCard = styled(Card)`
   align-items: center;
@@ -12,8 +12,8 @@ const StyledTotalValueLockedCard = styled(Card)`
 
 const TotalValueLockedCard = () => {
   const { t } = useTranslation()
-  const data = useGetStats()
-  const tvl = data ? data.total_value_locked_all.toLocaleString('en-US', { maximumFractionDigits: 0 }) : null
+  const data = useTvl()
+  const tvl = data ? data.toNumber().toLocaleString('en-US', { maximumFractionDigits: 2 }) : null
 
   return (
     <StyledTotalValueLockedCard>
@@ -24,7 +24,7 @@ const TotalValueLockedCard = () => {
         {data ? (
           <>
             <Heading size="xl">{`$${tvl}`}</Heading>
-            <Text color="textSubtle">{t('Across all LPs and Syrup Pools')}</Text>
+            <Text color="textSubtle">{t('Across all LPs and Pools')}</Text>
           </>
         ) : (
           <Skeleton height={66} />
