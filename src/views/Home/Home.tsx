@@ -88,11 +88,11 @@ const Home: React.FC = () => {
             <Card>
               <div style={{ display: 'flex' }}>
                 <div>
-                  <img style={{ marginLeft: 15, marginTop: 15 }} src={cowSrc} alt="cowswap" />
+                  <img style={{ width: 100, marginLeft: 15, marginTop: 15 }} src={cowSrc} alt="cowswap" />
                 </div>
-                <div style={{ width: '50%', marginLeft: 25, marginTop: 15 }}>
+                <div style={{ width: '50%', marginLeft: 25, marginTop: 50 }}>
                   <Heading size="xl" mb="24px">Welcome All</Heading>
-                  <Text color="#323063">Why be a human, when you can be an cow :)) ?</Text>
+                  {/* <Text color="#323063">Why be a human, when you can be an cow :)) ?</Text> */}
                 </div>
                 <div>
                   <img style={{ marginLeft: 5, marginTop: 70 }} src={goudaSrc} alt="cowswap" />
@@ -105,7 +105,7 @@ const Home: React.FC = () => {
             <CardBody>
               <TwitterStyled>
                 <TwitterTimelineEmbed
-                  borderColor="#4CAF50"
+                  borderColor="#323063"
                   sourceType="profile"
                   screenName="cowswap_finance"
                   noFooter
