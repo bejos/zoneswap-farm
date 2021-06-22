@@ -1,11 +1,12 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { Contract } from 'web3-eth-contract'
 import { ethers } from 'ethers'
 import { useAppDispatch } from 'state'
 import { updateUserAllowance, fetchFarmUserDataAsync } from 'state/actions'
 import { approve } from 'utils/callHelpers'
-import { useMasterchef, useCake, useSousChef, useLottery } from './useContract'
+import { getLuckyDrawAddress } from 'utils/addressHelpers'
+import { useMasterchef, useCake, useSousChef, useLottery, useLuckyDraw } from './useContract'
 
 // Approve a Farm
 export const useApprove = (lpContract: Contract) => {
@@ -74,4 +75,26 @@ export const useIfoApprove = (tokenContract: Contract, spenderAddress: string) =
   }, [account, spenderAddress, tokenContract])
 
   return onApprove
+}
+
+// Approve the lottery
+export const useLuckyDrawApprove = () => {
+  const [loading, setLoading] = useState(false)
+  const { account } = useWeb3React()
+  const cakeContract = useCake()
+  const luckyDrawAddress = getLuckyDrawAddress()
+
+  const handleApprove = useCallback(async () => {
+    try {
+      setLoading(true)
+      const tx = await cakeContract.methods.approve(luckyDrawAddress, ethers.constants.MaxUint256).send({ from: account })
+      setLoading(false)
+      return tx
+    } catch (e) {
+      setLoading(false)
+      return false
+    }
+  }, [account, cakeContract, luckyDrawAddress])
+
+  return { onApprove: handleApprove, loading }
 }

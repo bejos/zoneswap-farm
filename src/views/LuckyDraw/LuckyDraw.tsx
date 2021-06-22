@@ -1,23 +1,30 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import Lottie from 'react-lottie';
-import { Flex, Heading, Text, Button, AutoRenewIcon, Modal, useModal, PrizeIcon, Image, MetamaskIcon } from '@cowswap/uikit'
+import BigNumber from 'bignumber.js';
+import { Flex, Heading, Text, Button, AutoRenewIcon, BaseLayout, Card, Image, MetamaskIcon, CardBody } from '@cowswap/uikit'
 import styled from 'styled-components'
 import FlexLayout from 'components/layout/Flex'
 import Page from 'components/layout/Page'
 import { useWeb3React } from '@web3-react/core'
 import { getLuckyDrawContract } from 'utils/contractHelpers'
 import multicall from 'utils/multicall'
+import { useLuckyDrawApprove } from 'hooks/useApprove'
 import { getLuckyDrawAddress, getAddress } from 'utils/addressHelpers'
 import tokens from 'config/constants/tokens'
 import useToast from 'hooks/useToast'
 import useWeb3 from 'hooks/useWeb3'
 import { useBlock } from 'state/hooks'
-import { BASE_BSC_SCAN_URL, BASE_URL } from 'config'
+import { BASE_BSC_SCAN_URL, BASE_URL, DEFAULT_TOKEN_DECIMAL } from 'config'
 import luckyDrawAbi from 'config/abi/luckyDraw.json'
 import { registerToken } from 'utils/wallet'
+import { BIG_ZERO } from 'utils/bigNumber';
+import { useERC20 } from 'hooks/useContract'
+import { useLuckyDrawAllowance } from 'hooks/useAllowance'
+import SpinInput from './components/SpinInput'
 import luckyCow from './images/luckyCow-animation.json'
 import feedMeSrc from './images/feed-me.png'
 import fieldSrc from './images/field.png'
+import goudaJackpotSrc from './images/gouda.png'
 
 const goudaSrc = `${BASE_URL}/images/tokens/GOUDA.png`
 
@@ -39,6 +46,29 @@ const PageStyled = styled(Page)`
     background-image: none;
   }
   background-image: none;
+`
+
+const Cards = styled(BaseLayout)`
+  align-items: stretch;
+  justify-content: stretch;
+  margin-top: 32px;
+
+  & > div {
+    grid-column: span 6;
+    width: 100%;
+  }
+
+  ${({ theme }) => theme.mediaQueries.sm} {
+    & > div {
+      grid-column: span 8;
+    }
+  }
+
+  ${({ theme }) => theme.mediaQueries.lg} {
+    & > div {
+      grid-column: span 6;
+    }
+  }
 `
 
 const StyledImage = styled.img`
@@ -70,11 +100,6 @@ const FCard = styled.div`
   margin-top: 25px;
 `
 
-const AddresesStyled = styled.div`
-  height: 300px;
-  overflow: auto
-`
-
 const CardHeading = styled(Flex)`
   display: flex;
   margin-bottom: 20px;
@@ -84,6 +109,16 @@ const CardHeading = styled(Flex)`
   }
   h2 {
     font-size: 27px !important
+  }
+`
+
+const FlexColumn = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  .balance {
+    display: flex;
+    flex-direction: row;
   }
 `
 
@@ -108,58 +143,59 @@ const factoryColor = {
   '500': '#FFB130',
 }
 
-const factorySlots = {
-  '10': 1000,
-  '100': 10,
-  '500': 3,
+const factoryTime = {
+  '10': 1,
+  '100': 2,
+  '500': 4,
 }
 
-const MAX_TIME = 3
+const LuckyDrawActions = ({type, handleDraw, spinLoading, account, goudaBalance}) => {
+  const [times, setTimes] = useState('0')
+  const allowance = useLuckyDrawAllowance()
+  const { onApprove, loading: approving } = useLuckyDrawApprove()
 
-interface WonAddressProps {
-  address: string
-  account: string
-}
-
-const WonAddress: React.FC<WonAddressProps> = ({address, account}) => {
-  return <p key={address} style={{wordBreak: "break-all", color: address === account ? "#1FC7D4" : "#323063", marginBottom: 15 }}><a rel="noreferrer" target="_blank" href={`${BASE_BSC_SCAN_URL}/address/${address}`}>{address}</a></p>
-}
-
-const LuckyDrawActions = ({type, handleDraw, winners, spinLoading, account, won, spinTimes, handleClaim, isClaimed}) => {
-  const isOutOfSlots = winners[type].length >= factorySlots[type]
-  if (String(won) === String(type)) {
-    return <Button
-      variant="success"
-      mt="20px"
-      width="100%"
-      disabled={isClaimed || spinLoading}
-      onClick={handleClaim}
-      endIcon={spinLoading ? <AutoRenewIcon spin color="currentColor" /> : null}
-    >
-      {isClaimed ? 'Claimed' : 'Claim your prize'}
-    </Button>
+  const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const { value: inputValue } = e.currentTarget
+    setTimes(inputValue.replace(/[^0-9,]+/g, ''))
   }
-  if (isOutOfSlots) {
-    return <Button
-      variant="success"
-      mt="20px"
-      width="100%"
-      disabled
-    >
-      This Prize is out of slots
-    </Button>
+
+  const handleSelectMax = useCallback(() => {
+    setTimes(Math.floor(goudaBalance.toNumber() / factoryTime[type]).toString())
+  }, [goudaBalance, setTimes, type])
+
+  if (!allowance.toNumber()) {
+    return (
+      <Button disabled={approving} width="100%" onClick={onApprove} endIcon={approving ? <AutoRenewIcon spin color="currentColor" /> : null}>
+        {approving ? 'Approving ...' : 'Approve'}
+      </Button>
+    )
   }
-  return account ? <Button
-    variant="success"
-    mt="20px"
-    width="100%"
-    isLoading={(MAX_TIME - spinTimes) && spinLoading}
-    disabled={MAX_TIME - spinTimes < 1 || won === undefined || won}
-    onClick={() => handleDraw(type)}
-    endIcon={won === undefined || spinLoading || spinTimes === -1 ? <AutoRenewIcon spin color="currentColor" /> : null}
-  >
-    Spin {won === undefined || spinTimes === -1 ? '' : `(${MAX_TIME - spinTimes} grass)`}
-  </Button> : <Button
+
+  if (account) {
+    return (<>
+      <SpinInput
+        onSelectMax={handleSelectMax}
+        onChange={handleChange}
+        value={times}
+        max={goudaBalance}
+        symbol="GOUDA"
+        inputTitle="buy"
+      />
+      <Text textAlign="left">~{Number(times) * factoryTime[type]} GOUDA</Text>
+      <Button
+        variant="success"
+        mt="20px"
+        width="100%"
+        isLoading={spinLoading}
+        disabled={spinLoading}
+        onClick={() => handleDraw(type, times)}
+        endIcon={spinLoading ? <AutoRenewIcon spin color="currentColor" /> : null}
+      >
+        Spin
+      </Button>
+    </>)
+  }
+  return <Button
     variant="success"
     mt="20px"
     width="100%"
@@ -172,120 +208,94 @@ const LuckyDrawActions = ({type, handleDraw, winners, spinLoading, account, won,
 const LuckyDraw: React.FC = () => {
   const web3 = useWeb3()
   const { toastSuccess, toastError } = useToast()
-  const [wonPrize, setWonPrize] = useState(undefined)
+  const [wonGouda, setWonGouda] = useState(undefined)
+  const [jackpot, setJackpot] = useState('0,0')
+  const [topWinners, setTopWinners] = useState([])
+  const [topWinnersWithBalance, setTopWinnersWithBalance] = useState([])
   const { currentBlock } = useBlock()
   const { account } = useWeb3React()
   const [spinLoading, setSpinLoading] = useState(false)
-  const [isClaimed, setIsClaimed] = useState()
-  const [userResult, setUserResult] = useState({
-    '10': -1,
-    '100': -1,
-    '500': -1
-  })
-  const [winners, setWinners] = useState({
-    '10': [],
-    '100': [],
-    '500': []
-  })
+  const [goudaBalance, setGoudaBalance] = useState(BIG_ZERO)
 
   const isMetaMaskInScope = !!(window as WindowChain).ethereum?.isMetaMask
 
   const luckyDrawAddress = getLuckyDrawAddress()
 
+  const goudaContract = useERC20(getAddress(tokens.cow.address))
+
   const luckyDrawContract = useMemo(() => {
     return getLuckyDrawContract(luckyDrawAddress, web3)
   }, [luckyDrawAddress, web3])
 
-  const handleClaim= useCallback(async () => {
-    try {
-      setSpinLoading(true)
-      window.scrollTo(0, 200);
-      await luckyDrawContract.methods
-        .claim()
-        .send({ from: account, gas: 200000, to: luckyDrawAddress })
-        .on('transactionHash', (tx) => {
-          return tx.transactionHash
-        })
-      setSpinLoading(false)
-      return toastSuccess(
-        'Lucky Draw',
-        `Your GOUDA have been transferred to your wallet!`,
-      )
-    } catch (e) {
-      toastError('Lucky Draw', 'Please try again !')
-      return setSpinLoading(false)
-    }
-  }, [luckyDrawContract, account, luckyDrawAddress, setSpinLoading, toastSuccess, toastError])
-
   useEffect(() => {
     try {
       if (account) {
+        luckyDrawContract.methods.getTop10Winner().call()
+          .then(resp => {
+            setTopWinners(resp)
+          })
+        luckyDrawContract.methods.jackpotPrize().call()
+          .then(resp => {
+            setJackpot(new BigNumber(resp).div(DEFAULT_TOKEN_DECIMAL).toNumber().toLocaleString('en-US', { maximumFractionDigits: 2 }))
+          })
         luckyDrawContract.methods.getUser(account).call()
-          .then(({_time500, _time100, _time10, _prize, _claim}) => {
-            setUserResult({
-              '10': _time10,
-              '100': _time100,
-              '500': _time500
-            })
-
-            setWonPrize(Number(_prize))
-            setIsClaimed(_claim)
+          .then(([, won]) => {
+            setWonGouda(won)
+          })
+        goudaContract.methods.balanceOf(account).call()
+          .then(balance => {
+            setGoudaBalance(new BigNumber(balance).div(DEFAULT_TOKEN_DECIMAL))
           })
       }
     } catch (error) {
       console.error(error)
     }
-  }, [luckyDrawContract, account, currentBlock])
+  }, [luckyDrawContract, account, currentBlock, goudaContract])
 
   useEffect(() => {
     try {
       if (account) {
-        multicall(luckyDrawAbi, [
-          {
-            address: luckyDrawAddress,
-            name: 'getWin',
-            params: [500],
-          },
-          {
-            address: luckyDrawAddress,
-            name: 'getWin',
-            params: [100],
-          },
-          {
-            address: luckyDrawAddress,
-            name: 'getWin',
-            params: [10],
-          },
-        ]).then(([[type500], [type100], [type10]]) => {
-          setWinners({
-            '10': type10,
-            '100': type100,
-            '500': type500
-          })
+        const calls = topWinners.map(address => ({
+          address: luckyDrawAddress,
+          name: 'getUser',
+          params: [address],
+        }))
+        multicall(luckyDrawAbi, calls).then(resp => {
+          setTopWinnersWithBalance(topWinners.map((address, index) => {
+            return {
+              address,
+              won: new BigNumber(resp[index][0][1]._hex).div(DEFAULT_TOKEN_DECIMAL).toNumber()
+          }}))
         })
       }
     } catch (error) {
       console.error(error)
     }
     
-  }, [currentBlock, luckyDrawContract, account, luckyDrawAddress])
+  }, [currentBlock, luckyDrawContract, account, luckyDrawAddress, topWinners])
 
-  const handleDraw = useCallback(async (type) => {
+  const handleDraw = useCallback(async (type, times) => {
     try {
       setSpinLoading(true)
       window.scrollTo(0, 200);
+      const gasAmount = await luckyDrawContract.methods.randoms(type, times).estimateGas({from: account, to: luckyDrawAddress})
+
       await luckyDrawContract.methods
-        .random(type)
-        .send({ from: account, gas: 200000, to: luckyDrawAddress })
+        .randoms(type, times)
+        .send({ from: account, gas: gasAmount, to: luckyDrawAddress })
         .on('transactionHash', (tx) => {
           return tx.transactionHash
         })
-      const res = await luckyDrawContract.methods.getUser(account).call()
+
+      const [, resWon] = await luckyDrawContract.methods.getUser(account).call()
       setSpinLoading(false)
-      if (res._win) {
+      const wonThisRound = new BigNumber(resWon - wonGouda).div(DEFAULT_TOKEN_DECIMAL)
+
+      if (resWon > wonGouda) {
+        setWonGouda(resWon)
         return toastSuccess(
           'Lucky Draw',
-          `Congratulations! You Won ${type} Gouda`,
+          `Congratulations! You Won ${wonThisRound} Gouda`,
         )
       }
       return toastError('Lucky Draw', 'Better luck next time!!!')
@@ -293,25 +303,7 @@ const LuckyDraw: React.FC = () => {
       toastError('Lucky Draw', 'Please try again !')
       return setSpinLoading(false)
     }
-  }, [luckyDrawContract, account, luckyDrawAddress, setSpinLoading, toastSuccess, toastError])
-
-  const [onPresentWon10Modal] = useModal(<Modal title="Won 10 GOUDA">
-    <AddresesStyled>{winners['10'].length ? winners['10'].map(address => <WonAddress key={address} address={address} account={account} />) : <Text style={{ width: "425px" }} color="#323063">No winners... yet!</Text>}</AddresesStyled>
-  </Modal>)
-
-  const [onPresentWon100Modal] = useModal(<Modal title="Won 100 GOUDA">
-    <AddresesStyled>{winners['100'].length ? winners['100'].map(address => <WonAddress key={address} address={address} account={account} />) : <Text style={{ width: "425px" }} color="#323063">No winners... yet!</Text>}</AddresesStyled>
-  </Modal>)
-
-  const [onPresentWon500Modal] = useModal(<Modal title="Won 500 GOUDA">
-    <AddresesStyled>{winners['500'].length ? winners['500'].map(address => <WonAddress key={address} address={address} account={account} />) : <Text style={{ width: "425px" }} color="#323063">No winners... yet!</Text>}</AddresesStyled>
-  </Modal>)
-
-  const factoryModal = {
-    '10': onPresentWon10Modal,
-    '100': onPresentWon100Modal,
-    '500': onPresentWon500Modal,
-  }
+  }, [wonGouda, luckyDrawContract, account, luckyDrawAddress, setSpinLoading, toastSuccess, toastError])
 
   return (
     <>
@@ -339,6 +331,48 @@ const LuckyDraw: React.FC = () => {
             <MetamaskIcon ml="4px" />
           </Flex>
         )}
+        <Cards>
+          <Card>
+            <CardBody>
+              <Text fontSize="20px" mb="24px">
+                Big Jackpot
+              </Text>
+              <FlexColumn>
+                <Image src={goudaJackpotSrc} alt="gouda" width={85} height={85} />
+                <div style={{ marginLeft: 20 }}>
+                  <Text color="textSubtle">Total prize:</Text>
+                  <Text fontSize="30px">{jackpot}</Text>
+                </div>
+              </FlexColumn>
+            </CardBody>
+          </Card>
+          <Card>
+            <CardBody>
+              <Text fontSize="20px" mb="24px">
+                Rankings
+              </Text>
+              <FlexColumn>
+                <div className="ranking"><Text color="textSubtle">Ranks</Text></div>
+                <div className="address"><Text color="textSubtle">Address</Text></div>
+                <div className="balance">
+                  <Text mr="5px" color="textSubtle">Balance</Text>
+                  <img
+                    src={goudaJackpotSrc}
+                    alt="lucky-draw"
+                    width={25}
+                  />
+                </div>
+              </FlexColumn>
+              {topWinnersWithBalance.map((winner, index) => (
+                <FlexColumn>
+                  <div className="ranking"><Text color="textSubtle">{index + 1}</Text></div>
+                  <div className="address"><Text color="textSubtle"><a rel="noreferrer" target="_blank" href={`${BASE_BSC_SCAN_URL}/address/${winner.address}`}>{winner.address.substring(0, 11)}...{winner.address.slice(-4)}</a></Text></div>
+                  <div className="balance"><Text color="textSubtle">{winner.won}</Text></div>
+                </FlexColumn>
+              ))}
+            </CardBody>
+          </Card>
+        </Cards>
         <FlexLayout>
           {draws.map(({ label, type }) => {
             return <FCard key={type}>
@@ -350,15 +384,10 @@ const LuckyDraw: React.FC = () => {
               <LuckyDrawActions
                 type={type}
                 handleDraw={handleDraw}
-                winners={winners}
                 spinLoading={spinLoading}
                 account={account}
-                won={wonPrize}
-                spinTimes={userResult[type]}
-                handleClaim={handleClaim}
-                isClaimed={isClaimed}
+                goudaBalance={goudaBalance}
               />
-              <Button mt="15px" variant="primary" onClick={factoryModal[type]} endIcon={<PrizeIcon width="25px" color="currentColor" />}>Winner list</Button>
             </FCard>
           })}
         </FlexLayout>

@@ -20,6 +20,7 @@ import {
   getErc721Contract,
   getCakeVaultContract,
   getPredictionsContract,
+  getLuckyDrawContract,
 } from 'utils/contractHelpers'
 
 /**
@@ -39,6 +40,11 @@ export const useIfoV2Contract = (address: string) => {
 export const useERC20 = (address: string) => {
   const web3 = useWeb3()
   return useMemo(() => getBep20Contract(address, web3), [address, web3])
+}
+
+export const useLuckyDraw = (address: string) => {
+  const web3 = useWeb3()
+  return useMemo(() => getLuckyDrawContract(address, web3), [address, web3])
 }
 
 /**

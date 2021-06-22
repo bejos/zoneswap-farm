@@ -48,4 +48,6 @@ const farms: FarmConfig[] = [
   },
 ]
 
-export default farms
+const farmsExported = isMainnet ? farms : farms.filter(({ lpSymbol }) => lpSymbol !== 'GOUDA-PRESALE LP')
+
+export default farmsExported

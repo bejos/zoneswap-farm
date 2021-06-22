@@ -50,10 +50,8 @@ const fetchFarms = async (farmsToFetch: FarmConfig[]) => {
         },
       ]
 
-      const result = await multicall(erc20, calls).catch(err => console.error({
-        err,
-        calls
-      }))
+      const result = await multicall(erc20, calls)
+
       let [
         tokenBalanceLP,
         quoteTokenBalanceLP,
