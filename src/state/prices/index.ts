@@ -11,20 +11,23 @@ const initialState: PriceState = {
 
 // Thunks
 export const fetchPrices = createAsyncThunk<PriceApiThunk>('prices/fetch', async () => {
-  const response = await fetch('https://api.pancakeswap.info/api/v2/tokens')
-  const data = (await response.json()) as PriceApiResponse
+  const responseBUSD = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BUSDUSDT')
+  const { price: priceBUSD } = await responseBUSD.json()
+
+  const responseBNB = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT')
+  const { price: priceBNB } = await responseBNB.json()
+
+  // const response = await fetch('https://api.pancakeswap.info/api/v2/tokens')
+  // const data = (await response.json()) as PriceApiResponse
 
   // Return normalized token names
   return {
-    updated_at: data.updated_at,
-    data: {...Object.keys(data.data).reduce((accum, token) => {
-      return {
-        ...accum,
-        [token.toLowerCase()]: parseFloat(data.data[token].price),
-      }
-    }, {}),
-    [tokens.presale.address[56].toLowerCase()]: 0.5},
-    [tokens.presale.address[97].toLowerCase()]: 0.5
+    updated_at: String(Date.now()),
+    data: {
+      [tokens.wbnb.address[56].toLowerCase()]: parseFloat(priceBNB),
+      [tokens.busd.address[56].toLowerCase()]: parseFloat(priceBUSD),
+      [tokens.presale.address[56].toLowerCase()]: 0.5
+    },
   }
 })
 
