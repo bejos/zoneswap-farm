@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import Lottie from 'react-lottie';
 import BigNumber from 'bignumber.js';
-import { Flex, Heading, Text, Button, AutoRenewIcon, BaseLayout, Card, Image, MetamaskIcon, CardBody } from '@cowswap/uikit'
+import { Flex, Heading, Text, Button, AutoRenewIcon, BaseLayout, Card, Image, MetamaskIcon, CardBody, ButtonMenu, ButtonMenuItem, NotificationDot } from '@cowswap/uikit'
 import styled from 'styled-components'
 import FlexLayout from 'components/layout/Flex'
 import Page from 'components/layout/Page'
@@ -115,10 +115,19 @@ const CardHeading = styled(Flex)`
 const FlexColumn = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   .balance {
     display: flex;
     flex-direction: row;
+  }
+`
+
+const FlexJackpotColumn = styled.div`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  div:first-child {
+    flex-grow: 1
   }
 `
 
@@ -147,6 +156,62 @@ const factoryTime = {
   '10': 1,
   '100': 2,
   '500': 4,
+}
+
+const BigJackpot = ({ goudaBalance, jackpot, spinLoading, handleDraw }) => {
+  const [jackpotTimes, setJackpotTimes] = useState('0')
+  const allowance = useLuckyDrawAllowance()
+  const { onApprove, loading: approving } = useLuckyDrawApprove()
+  const handleChangeJackpot = (e: React.FormEvent<HTMLInputElement>) => {
+    const { value: inputValue } = e.currentTarget
+    setJackpotTimes(inputValue.replace(/[^0-9,]+/g, ''))
+  }
+
+  const handleSelectMaxJackpot = useCallback(() => {
+    setJackpotTimes(Math.floor(goudaBalance.toNumber() / 1).toString())
+  }, [goudaBalance, setJackpotTimes])
+
+  return (
+    <Card>
+      <CardBody>
+        <Text fontSize="20px" mb="24px">
+          Big Jackpot
+        </Text>
+        <FlexColumn>
+          <Image src={goudaJackpotSrc} alt="gouda" width={85} height={85} />
+          <div style={{ marginLeft: 20 }}>
+            <Text color="textSubtle">Total prize:</Text>
+            <Text fontSize="30px">{jackpot}</Text>
+          </div>
+        </FlexColumn>
+        {allowance.toNumber() ? (<><FlexJackpotColumn style={{ justifyContent: "space-between" }}>
+          <SpinInput
+            onSelectMax={handleSelectMaxJackpot}
+            onChange={handleChangeJackpot}
+            value={jackpotTimes}
+            max={goudaBalance.toString()}
+            symbol="GOUDA"
+            inputTitle="buy"
+          />
+          <Button
+            // variant="success"
+            height="89px"
+            ml="20px"
+            isLoading={spinLoading}
+            disabled={spinLoading}
+            onClick={() => handleDraw('0', jackpotTimes)}
+            endIcon={spinLoading ? <AutoRenewIcon spin color="currentColor" /> : null}
+          >
+            Spin
+          </Button>
+        </FlexJackpotColumn>
+        <Text color="textSubtle" textAlign="left">~{Number(jackpotTimes)} GOUDA</Text></>) : 
+          <Button mt="20px" disabled={approving} width="100%" onClick={onApprove} endIcon={approving ? <AutoRenewIcon spin color="currentColor" /> : null}>
+            {approving ? 'Approving ...' : 'Approve'}
+          </Button>}
+      </CardBody>
+    </Card>
+  )
 }
 
 const LuckyDrawActions = ({type, handleDraw, spinLoading, account, goudaBalance}) => {
@@ -181,9 +246,9 @@ const LuckyDrawActions = ({type, handleDraw, spinLoading, account, goudaBalance}
         symbol="GOUDA"
         inputTitle="buy"
       />
-      <Text textAlign="left">~{Number(times) * factoryTime[type]} GOUDA</Text>
+      <Text color="textSubtle" textAlign="left">~{Number(times) * factoryTime[type]} GOUDA</Text>
       <Button
-        variant="success"
+        // variant="success"
         mt="20px"
         width="100%"
         isLoading={spinLoading}
@@ -211,9 +276,11 @@ const LuckyDraw: React.FC = () => {
   const [wonGouda, setWonGouda] = useState(undefined)
   const [jackpot, setJackpot] = useState('0,0')
   const [topWinners, setTopWinners] = useState([])
+  const [topPlayers, setTopPlayers] = useState([])
   const [topWinnersWithBalance, setTopWinnersWithBalance] = useState([])
   const { currentBlock } = useBlock()
   const { account } = useWeb3React()
+  const [typeRankings, setTypeRankings] = useState(0);
   const [spinLoading, setSpinLoading] = useState(false)
   const [goudaBalance, setGoudaBalance] = useState(BIG_ZERO)
 
@@ -227,6 +294,8 @@ const LuckyDraw: React.FC = () => {
     return getLuckyDrawContract(luckyDrawAddress, web3)
   }, [luckyDrawAddress, web3])
 
+  const handleTypeRankingsClick = (newIndex) => setTypeRankings(newIndex)
+
   useEffect(() => {
     try {
       if (account) {
@@ -234,7 +303,11 @@ const LuckyDraw: React.FC = () => {
           .then(resp => {
             setTopWinners(resp)
           })
-        luckyDrawContract.methods.jackpotPrize().call()
+        luckyDrawContract.methods.getTop10Player().call()
+          .then(resp => {
+            setTopPlayers(resp)
+          })
+        luckyDrawContract.methods.bigJackpot().call()
           .then(resp => {
             setJackpot(new BigNumber(resp).div(DEFAULT_TOKEN_DECIMAL).toNumber().toLocaleString('en-US', { maximumFractionDigits: 2 }))
           })
@@ -255,7 +328,7 @@ const LuckyDraw: React.FC = () => {
   useEffect(() => {
     try {
       if (account) {
-        const calls = topWinners.map(address => ({
+        const calls = (typeRankings ? topPlayers : topWinners).map(address => ({
           address: luckyDrawAddress,
           name: 'getUser',
           params: [address],
@@ -264,7 +337,7 @@ const LuckyDraw: React.FC = () => {
           setTopWinnersWithBalance(topWinners.map((address, index) => {
             return {
               address,
-              won: new BigNumber(resp[index][0][1]._hex).div(DEFAULT_TOKEN_DECIMAL).toNumber()
+              won: new BigNumber(resp[index][0][typeRankings]._hex).div(DEFAULT_TOKEN_DECIMAL).toNumber()
           }}))
         })
       }
@@ -272,7 +345,7 @@ const LuckyDraw: React.FC = () => {
       console.error(error)
     }
     
-  }, [currentBlock, luckyDrawContract, account, luckyDrawAddress, topWinners])
+  }, [currentBlock, luckyDrawContract, account, luckyDrawAddress, topWinners, topPlayers, typeRankings])
 
   const handleDraw = useCallback(async (type, times) => {
     try {
@@ -332,39 +405,40 @@ const LuckyDraw: React.FC = () => {
           </Flex>
         )}
         <Cards>
+          <BigJackpot
+            goudaBalance={goudaBalance}
+            handleDraw={handleDraw}
+            spinLoading={spinLoading}
+            jackpot={jackpot}
+          />
           <Card>
             <CardBody>
-              <Text fontSize="20px" mb="24px">
-                Big Jackpot
-              </Text>
-              <FlexColumn>
-                <Image src={goudaJackpotSrc} alt="gouda" width={85} height={85} />
-                <div style={{ marginLeft: 20 }}>
-                  <Text color="textSubtle">Total prize:</Text>
-                  <Text fontSize="30px">{jackpot}</Text>
-                </div>
+              <FlexColumn style={{
+                justifyContent: "space-between",
+                alignItems: "baseline",
+                marginBottom: 15
+              }}>
+                <Text fontSize="20px" mb="24px">
+                  Rankings
+                </Text>
+                <ButtonMenu activeIndex={typeRankings} onItemClick={handleTypeRankingsClick}>
+                  <NotificationDot show={typeRankings === 0}>
+                    <ButtonMenuItem>Top Players</ButtonMenuItem>
+                  </NotificationDot>
+                  <NotificationDot show={typeRankings === 1}>
+                    <ButtonMenuItem>Top Winners</ButtonMenuItem>
+                  </NotificationDot>
+                </ButtonMenu>
               </FlexColumn>
-            </CardBody>
-          </Card>
-          <Card>
-            <CardBody>
-              <Text fontSize="20px" mb="24px">
-                Rankings
-              </Text>
-              <FlexColumn>
+              <FlexColumn style={{ justifyContent: "space-between" }}>
                 <div className="ranking"><Text color="textSubtle">Ranks</Text></div>
                 <div className="address"><Text color="textSubtle">Address</Text></div>
                 <div className="balance">
                   <Text mr="5px" color="textSubtle">Balance</Text>
-                  <img
-                    src={goudaJackpotSrc}
-                    alt="lucky-draw"
-                    width={25}
-                  />
                 </div>
               </FlexColumn>
               {topWinnersWithBalance.map((winner, index) => (
-                <FlexColumn>
+                <FlexColumn style={{ justifyContent: "space-between" }}>
                   <div className="ranking"><Text color="textSubtle">{index + 1}</Text></div>
                   <div className="address"><Text color="textSubtle"><a rel="noreferrer" target="_blank" href={`${BASE_BSC_SCAN_URL}/address/${winner.address}`}>{winner.address.substring(0, 11)}...{winner.address.slice(-4)}</a></Text></div>
                   <div className="balance"><Text color="textSubtle">{winner.won}</Text></div>
