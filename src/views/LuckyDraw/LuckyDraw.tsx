@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import Lottie from 'react-lottie';
 import BigNumber from 'bignumber.js';
-import { Flex, Heading, Text, Button, AutoRenewIcon, BaseLayout, Card, Image, MetamaskIcon, CardBody, ButtonMenu, ButtonMenuItem, NotificationDot } from '@cowswap/uikit'
+import { Flex, Heading, Text, Button, AutoRenewIcon, BaseLayout, Card, Image, MetamaskIcon, CardBody, ButtonMenu, ButtonMenuItem, NotificationDot, LinkExternal } from '@cowswap/uikit'
 import styled from 'styled-components'
 import FlexLayout from 'components/layout/Flex'
 import Page from 'components/layout/Page'
@@ -115,9 +115,23 @@ const CardHeading = styled(Flex)`
 const FlexColumn = styled.div`
   display: flex;
   flex-direction: row;
+`
+
+const FlexAddressColumn = styled.div`
+  display: flex;
+  flex-direction: row;
   .balance {
     display: flex;
     flex-direction: row;
+  }
+  >div:nth-of-type(1) {
+    color: #FFC700
+  }
+  >div:nth-of-type(2) {
+    color: #ADADB2
+  }
+  >div:nth-of-type(3) {
+    color: #FFA487
   }
 `
 
@@ -158,6 +172,18 @@ const factoryTime = {
   '500': 4,
 }
 
+const factoryColorPrize = {
+  '0': "#FFC700",
+  '1': "#ADADB2",
+  '2': "#FFA487",
+}
+
+const factoryFontPrize = {
+  '0': "24px",
+  '1': "18px",
+  '2': "16px",
+}
+
 const BigJackpot = ({ goudaBalance, jackpot, spinLoading, handleDraw }) => {
   const [jackpotTimes, setJackpotTimes] = useState('0')
   const allowance = useLuckyDrawAllowance()
@@ -174,12 +200,12 @@ const BigJackpot = ({ goudaBalance, jackpot, spinLoading, handleDraw }) => {
   return (
     <Card>
       <CardBody>
-        <Text fontSize="20px" mb="24px">
+        <Text fontSize="30px" mb="24px">
           Big Jackpot
         </Text>
         <FlexColumn>
           <Image src={goudaJackpotSrc} alt="gouda" width={85} height={85} />
-          <div style={{ marginLeft: 20 }}>
+          <div style={{ marginLeft: 30 }}>
             <Text color="textSubtle">Total prize:</Text>
             <Text fontSize="30px">{jackpot}</Text>
           </div>
@@ -381,9 +407,10 @@ const LuckyDraw: React.FC = () => {
   return (
     <>
       <PageStyled>
-        <Heading as="h1" textAlign="center" size="xl" mb="24px" color="text">
+        <Heading as="h1" textAlign="left" size="xl" mb="24px" color="text">
           Lucky draw
         </Heading>
+        <LinkExternal href="https://docs.cowswap.app/products/gamble">Learn more</LinkExternal>
         {spinLoading ? <Lottie options={defaultOptions}
           width={250}
         /> : <Image mx="auto"
@@ -438,11 +465,11 @@ const LuckyDraw: React.FC = () => {
                 </div>
               </FlexColumn>
               {topWinnersWithBalance.map((winner, index) => (
-                <FlexColumn style={{ justifyContent: "space-between" }}>
-                  <div className="ranking"><Text color="textSubtle">{index + 1}</Text></div>
-                  <div className="address"><Text color="textSubtle"><a rel="noreferrer" target="_blank" href={`${BASE_BSC_SCAN_URL}/address/${winner.address}`}>{winner.address.substring(0, 11)}...{winner.address.slice(-4)}</a></Text></div>
-                  <div className="balance"><Text color="textSubtle">{winner.won}</Text></div>
-                </FlexColumn>
+                <FlexAddressColumn style={{ justifyContent: "space-between" }}>
+                  <div className="ranking"><Text fontSize={factoryFontPrize[index] || "16px"} color={factoryColorPrize[index] || "textSubtle"}>{index + 1}</Text></div>
+                  <div className="address"><Text fontSize={factoryFontPrize[index] || "16px"}  color={factoryColorPrize[index] || "textSubtle"}><a rel="noreferrer" target="_blank" href={`${BASE_BSC_SCAN_URL}/address/${winner.address}`}>{winner.address.substring(0, 11)}...{winner.address.slice(-4)}</a></Text></div>
+                  <div className="balance"><Text fontSize={factoryFontPrize[index] || "16px"} color={factoryColorPrize[index] || "textSubtle"}>{winner.won}</Text></div>
+                </FlexAddressColumn>
               ))}
             </CardBody>
           </Card>
