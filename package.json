@@ -32,6 +32,7 @@
     ]
   },
   "dependencies": {
+    "react-confetti": "^6.0.1",
     "react-twitter-embed": "^3.0.3",
     "@cowswap/uikit": "^0.2.3",
     "@binance-chain/bsc-connector": "^1.0.0",
