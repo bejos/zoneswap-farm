@@ -41,17 +41,19 @@ const factoryFontPrize = {
 const Rankings = ({ topWinnersWithBalance, isMobile, handleTypeRankingsClick, typeRankings }) => {
 
   return (
-    <Card>
+    <Card style={{
+      width: isMobile ? "90%" : "600px"
+    }}>
       <CardBody>
         <FlexColumn style={{
           justifyContent: "space-between",
           alignItems: "baseline",
           marginBottom: 15
         }}>
-          {!isMobile ? <Text fontSize="20px" mb="24px">
+          {!isMobile ? <Text fontSize="20px" mr="100px">
             Rankings
           </Text> : null}
-          <ButtonMenu activeIndex={typeRankings} onItemClick={handleTypeRankingsClick}>
+          <ButtonMenu activeIndex={typeRankings} onItemClick={handleTypeRankingsClick} scale="sm" variant="subtle">
             <NotificationDot show={typeRankings === 0}>
               <ButtonMenuItem>Top Players</ButtonMenuItem>
             </NotificationDot>
@@ -60,11 +62,11 @@ const Rankings = ({ topWinnersWithBalance, isMobile, handleTypeRankingsClick, ty
             </NotificationDot>
           </ButtonMenu>
         </FlexColumn>
-        <FlexColumn style={{ justifyContent: "space-between" }}>
+        <FlexColumn style={{ justifyContent: "space-between", marginBottom: 15 }}>
           <div className="ranking"><Text color="textSubtle">Ranks</Text></div>
           <div className="address"><Text color="textSubtle">Address</Text></div>
           <div className="balance">
-            <Text mr="5px" color="textSubtle">Balance</Text>
+            <Text color="textSubtle">Won</Text>
           </div>
         </FlexColumn>
         {topWinnersWithBalance.map((winner, index) => (

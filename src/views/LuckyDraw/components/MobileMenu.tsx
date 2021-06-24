@@ -8,9 +8,9 @@ import {
   ButtonMenuItem,
   Cards,
   ChartIcon,
-  HistoryIcon,
   IconButton,
 } from '@cowswap/uikit'
+import TicketIcon from '../icons/Ticket'
 import useSwiper from '../hooks/useSwiper'
 
 const ButtonNav = styled.div`
@@ -28,13 +28,9 @@ const StyledMobileMenu = styled.div`
   display: flex;
   flex: none;
   height: 64px;
-
-  ${({ theme }) => theme.mediaQueries.lg} {
-    display: none;
-  }
 `
 
-const MobileMenu = ({setView, activeIndex}) => {
+const MobileMenu = ({setView, activeIndex, isMobile}) => {
   const { swiper } = useSwiper()
   const { account } = useWeb3React()
 
@@ -42,25 +38,25 @@ const MobileMenu = ({setView, activeIndex}) => {
     <StyledMobileMenu>
       <ButtonNav>
         <IconButton variant="text" onClick={() => swiper.slidePrev()} disabled={activeIndex !== 0}>
-          <ArrowBackIcon width="24px" color="primary" />
+          <ArrowBackIcon width="24px" color="#323063" />
         </IconButton>
       </ButtonNav>
       <TabNav>
-        <ButtonMenu activeIndex={activeIndex} scale="sm" variant="subtle" onItemClick={setView}>
+        <ButtonMenu activeIndex={activeIndex} scale={isMobile ? 'sm' : 'md'} variant="subtle" onItemClick={setView}>
           <ButtonMenuItem>
             <Cards color="currentColor" />
           </ButtonMenuItem>
           <ButtonMenuItem>
-            <ChartIcon color="currentColor" />
+            <TicketIcon color="currentColor" />
           </ButtonMenuItem>
           <ButtonMenuItem disabled={!account}>
-            <HistoryIcon color="currentColor" />
+            <ChartIcon color="currentColor" />
           </ButtonMenuItem>
         </ButtonMenu>
       </TabNav>
       <ButtonNav>
         <IconButton variant="text" onClick={() => swiper.slideNext()} disabled={activeIndex !== 0}>
-          <ArrowForwardIcon width="24px" color="primary" />
+          <ArrowForwardIcon width="24px" color="#323063" />
         </IconButton>
       </ButtonNav>
     </StyledMobileMenu>

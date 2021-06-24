@@ -4,7 +4,9 @@ import React, { useState, useCallback } from 'react'
 import { Text, Button, AutoRenewIcon, Flex, Heading, CardBody, CardHeader, Card } from '@cowswap/uikit'
 import { useLuckyDrawApprove } from 'hooks/useApprove'
 import { useLuckyDrawAllowance } from 'hooks/useAllowance'
+import TicketIcon from '../icons/Ticket'
 import SpinInput from './SpinInput'
+import bullSrc from '../images/01.png'
 
 const MAX_TIMES = 200
 
@@ -28,9 +30,14 @@ const RoundCard = ({type, handleDraw, spinLoading, account, goudaBalance, goudaP
 
   return <Card key={type}>
     <CardHeader>
-      <Flex justifyContent="center" alignItems="center">
-        <Heading mb="20px">{label}</Heading>
-      </Flex>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}>
+        <img width="150px" src={bullSrc} alt="cowswap" />
+        <Heading>{label}</Heading>
+      </div>
     </CardHeader>
     <CardBody>
     {!allowance.toNumber() ? 
@@ -46,14 +53,15 @@ const RoundCard = ({type, handleDraw, spinLoading, account, goudaBalance, goudaP
         symbol="GOUDA"
         inputTitle="buy"
       />
-      <Text color="textSubtle" textAlign="left">~{Number(times) * goudaPerTime} GOUDA</Text>
+      <Text fontSize="12px" color="textSubtle" textAlign="left">~{Number(times) * goudaPerTime} GOUDA</Text>
       <Button
-        mt="20px"
+        variant="subtle"
+        mt="5px"
         width="100%"
         isLoading={spinLoading}
         disabled={spinLoading || disabled || outOfMax}
         onClick={() => handleDraw(type, times)}
-        endIcon={spinLoading ? <AutoRenewIcon spin color="currentColor" /> : null}
+        endIcon={spinLoading ? <AutoRenewIcon spin color="currentColor" /> : <TicketIcon color="currentColor" />}
       >
         {outOfMax ? `Out of maximum (${MAX_TIMES})` : 'Spin'}
       </Button>

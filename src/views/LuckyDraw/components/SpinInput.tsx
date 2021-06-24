@@ -35,7 +35,7 @@ const StyledTokenInput = styled.div<InputProps>`
 
 const StyledInput = styled(Input)`
   box-shadow: none;
-  width: 80px;
+  width: 150px;
   padding: 0 5px;
 `
 
@@ -65,11 +65,10 @@ const SpinInput: React.FC<ModalInputProps> = ({
         <Flex justifyContent="space-between">
           <Text fontSize="14px">Times</Text>
           <Text fontSize="14px">
-            <img style={{ marginRight: 5, transform: 'translateY(5px)' }} alt="gouda" src={goudaIcon} height={20} width={20} />
             {displayBalance(max)}
           </Text>
         </Flex>
-        <Flex alignItems="flex-end" justifyContent="space-around">
+        <Flex alignItems="baseline" justifyContent="space-between">
           <StyledInput
             pattern="^[0-9]*[,]?[0-9]*$"
             inputMode="decimal"
@@ -82,7 +81,7 @@ const SpinInput: React.FC<ModalInputProps> = ({
           <Button variant="secondary" scale="sm" onClick={onSelectMax} mr="8px">
             Max
           </Button>
-          <Text fontSize="16px">{symbol}</Text>
+          <img style={{ marginRight: 5, transform: 'translateY(5px)' }} alt="gouda" src={goudaIcon} height={20} width={20} />
         </Flex>
       </StyledTokenInput>
     </div>

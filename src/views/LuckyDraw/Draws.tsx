@@ -22,23 +22,23 @@ const StyledSwiper = styled.div`
 `
 const draws = [
   {
-    label: 'Win 500 Gouda',
+    label: '500 Gouda',
     type: 500
   },
   {
-    label: 'Win 100 Gouda',
+    label: '100 Gouda',
     type: 100
   },
   {
-    label: 'Win 50 Gouda',
+    label: '50 Gouda',
     type: 50
   },
   {
-    label: 'Win 10 Gouda',
+    label: '10 Gouda',
     type: 10
   },
   {
-    label: 'Win 5 Gouda',
+    label: '5 Gouda',
     type: 5
   },
 ]

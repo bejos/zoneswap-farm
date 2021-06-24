@@ -79,17 +79,18 @@ const LuckyDraw = () => {
   useEffect(() => {
     try {
       if (account) {
-        const calls = (typeRankings ? topPlayers : topWinners).map(address => ({
+        const list = typeRankings ? topPlayers : topWinners
+        const calls = list.map(address => ({
           address: luckyDrawAddress,
           name: 'getUser',
           params: [address],
         }))
         multicall(luckyDrawAbi, calls).then(resp => {
-          setTopWinnersWithBalance(topWinners.map((address, index) => {
+          setTopWinnersWithBalance(list.map((address, index) => {
             return {
               address,
               won: new BigNumber(resp[index][0][typeRankings]._hex).div(DEFAULT_TOKEN_DECIMAL).toNumber()
-          }}))
+          }}).sort((a, b) => a.won < b.won ? 1 : -1))
         })
       }
     } catch (error) {
@@ -102,9 +103,7 @@ const LuckyDraw = () => {
     try {
       setSpinLoading(true)
       const gasAmount = await luckyDrawContract.methods.randoms(type, times).estimateGas({from: account, to: luckyDrawAddress})
-      console.log({
-        gasAmount
-      })
+
       await luckyDrawContract.methods
         .randoms(type, times)
         .send({ from: account, gas: Math.floor(gasAmount * 1.2), to: luckyDrawAddress })

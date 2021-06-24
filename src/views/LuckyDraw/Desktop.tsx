@@ -1,57 +1,17 @@
-import React from 'react'
-import Lottie from 'react-lottie';
-import { Heading, BaseLayout, Image, LinkExternal } from '@cowswap/uikit'
+import React, { useState } from 'react'
+import { Flex, LinkExternal, Box } from '@cowswap/uikit'
 import styled from 'styled-components'
-import Page from 'components/layout/Page'
+import MobileMenu from './components/MobileMenu'
 import Rankings from './Rankings'
 import Draws from './Draws'
 import BigJackpot from './Jackpot'
-import luckyCow from './images/luckyCow-animation.json'
-import feedMeSrc from './images/feed-me.png'
 import fieldSrc from './images/field.png'
 
-const defaultOptions = {
-  loop: true,
-  autoplay: true, 
-  animationData: luckyCow,
-  rendererSettings: {
-    preserveAspectRatio: 'xMidYMid slice'
-  }
-};
-
-const PageStyled = styled(Page)`
-  ${({ theme }) => theme.mediaQueries.xs} {
-    background-image: url(${fieldSrc});
-    background-size: cover;
-  }
-  ${({ theme }) => theme.mediaQueries.sm} {
-    background-image: none;
-  }
-  background-image: none;
-`
-
-const Cards = styled(BaseLayout)`
-  align-items: stretch;
-  justify-content: stretch;
-  margin-top: 15px;
-  margin-bottom: 15px;
-
-  & > div {
-    grid-column: span 6;
-    width: 100%;
-  }
-
-  ${({ theme }) => theme.mediaQueries.sm} {
-    & > div {
-      grid-column: span 8;
-    }
-  }
-
-  ${({ theme }) => theme.mediaQueries.lg} {
-    & > div {
-      grid-column: span 6;
-    }
-  }
+const StyledDesktop = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
 `
 
 const StyledImage = styled.img`
@@ -69,28 +29,40 @@ const StyledImage = styled.img`
   }
 `
 
-const LuckyDraw = ({ handleDraw, goudaBalance, spinLoading, account, jackpot, topWinnersWithBalance, typeRankings, handleTypeRankingsClick}) => {
+const View = styled.div<{ isVisible: boolean }>`
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  display: ${({ isVisible }) => (isVisible ? 'flex' : 'none')};
+  justify-content: center;
+`
 
+const LuckyDraw = ({ handleDraw, goudaBalance, spinLoading, account, jackpot, topWinnersWithBalance, typeRankings, handleTypeRankingsClick}) => {
+  const [activeIndex, setView] = useState(0)
   return (
     <>
-      <PageStyled>
-        <Heading as="h1" textAlign="left" size="xl" color="text">
-          Lucky draw <LinkExternal href="https://docs.cowswap.app/products/gamble">Learn more</LinkExternal>
-        </Heading>
-        {spinLoading ? <Lottie options={defaultOptions}
-          width={250}
-        /> : <Image mx="auto"
-          src={feedMeSrc}
-          alt="lucky-draw"
-          width={250}
-          height={250}/>}
-        <Cards>
-          <BigJackpot isMobile={false} jackpot={jackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
-          <Rankings handleTypeRankingsClick={handleTypeRankingsClick} typeRankings={typeRankings} isMobile={false} topWinnersWithBalance={topWinnersWithBalance} />
-        </Cards>
-        <Draws handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
-      </PageStyled>
-      <StyledImage src={fieldSrc} />
+      <StyledDesktop>
+        <Box height="100%" overflow="hidden" position="relative">
+          <View isVisible={activeIndex === 0}>
+            <Flex alignItems="center" height="100%">
+              <Draws handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
+            </Flex>
+          </View>
+          <View isVisible={activeIndex === 1}>
+            <Flex alignItems="center" height="100%" justifyContent="center">
+              <BigJackpot isMobile={false} jackpot={jackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
+            </Flex>
+          </View>
+          <View isVisible={activeIndex === 2}>
+            <Flex alignItems="center" height="100%" justifyContent="center">
+              <Rankings handleTypeRankingsClick={handleTypeRankingsClick} typeRankings={typeRankings} isMobile={false} topWinnersWithBalance={topWinnersWithBalance} />
+            </Flex>
+          </View>
+        </Box>
+        <MobileMenu isMobile={false} setView={setView} activeIndex={activeIndex} />
+      </StyledDesktop>
     </>
   )
 }
