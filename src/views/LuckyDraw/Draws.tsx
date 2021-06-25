@@ -42,9 +42,14 @@ const prizes = [
     label: '5 Gouda',
     type: 5
   },
+  {
+    label: 'Random Gouda',
+    type: -1
+  },
 ]
 
 const factoryTime = {
+  '-1': 5,
   '5': 1,
   '10': 1,
   '100': 2,

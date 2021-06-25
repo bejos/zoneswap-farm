@@ -102,10 +102,11 @@ const LuckyDraw = () => {
   const handleDraw = useCallback(async (type, times) => {
     try {
       setSpinLoading(true)
-      const gasAmount = await luckyDrawContract.methods.randoms(type, times).estimateGas({from: account, to: luckyDrawAddress})
+      const args = type < 0 ? [times] : [type, times]
+      const gasAmount = await luckyDrawContract.methods.randoms(...args).estimateGas({from: account, to: luckyDrawAddress})
 
       await luckyDrawContract.methods
-        .randoms(type, times)
+        .randoms(...args)
         .send({ from: account, gas: Math.floor(gasAmount * 1.2), to: luckyDrawAddress })
         .on('transactionHash', (tx) => {
           return tx.transactionHash
