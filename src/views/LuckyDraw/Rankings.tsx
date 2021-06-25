@@ -66,7 +66,7 @@ const Rankings = ({ topWinnersWithBalance, isMobile, handleTypeRankingsClick, ty
           <div className="ranking"><Text color="textSubtle">Ranks</Text></div>
           <div className="address"><Text color="textSubtle">Address</Text></div>
           <div className="balance">
-            <Text color="textSubtle">Won</Text>
+            <Text color="textSubtle">Balance(Gouda)</Text>
           </div>
         </FlexColumn>
         {topWinnersWithBalance.map((winner, index) => (

@@ -6,7 +6,7 @@ import { useAppDispatch } from 'state'
 import { updateUserAllowance, fetchFarmUserDataAsync } from 'state/actions'
 import { approve } from 'utils/callHelpers'
 import { getLuckyDrawAddress } from 'utils/addressHelpers'
-import { useMasterchef, useCake, useSousChef, useLottery, useLuckyDraw } from './useContract'
+import { useMasterchef, useCake, useSousChef, useLottery } from './useContract'
 
 // Approve a Farm
 export const useApprove = (lpContract: Contract) => {

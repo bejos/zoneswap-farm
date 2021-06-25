@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { BaseLayout, CardBody, Card, Text, Heading } from '@cowswap/uikit'
+import { BaseLayout, CardBody, Card, Heading } from '@cowswap/uikit'
 import Page from 'components/layout/Page'
 import { TwitterTimelineEmbed, TwitterFollowButton } from 'react-twitter-embed';
 import FarmStakingCard from 'views/Home/components/FarmStakingCard'

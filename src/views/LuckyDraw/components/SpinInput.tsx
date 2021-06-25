@@ -41,7 +41,6 @@ const StyledInput = styled(Input)`
 
 const SpinInput: React.FC<ModalInputProps> = ({
   max,
-  symbol,
   onChange,
   onSelectMax,
   value,

@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState, useCallback } from 'react'
 
-import { Text, Button, AutoRenewIcon, Flex, Heading, CardBody, CardHeader, Card } from '@cowswap/uikit'
+import { Text, Button, AutoRenewIcon, Heading, CardBody, CardHeader, Card } from '@cowswap/uikit'
 import { useLuckyDrawApprove } from 'hooks/useApprove'
 import { useLuckyDrawAllowance } from 'hooks/useAllowance'
 import TicketIcon from '../icons/Ticket'
@@ -35,7 +35,7 @@ const RoundCard = ({type, handleDraw, spinLoading, account, goudaBalance, goudaP
         flexDirection: 'column',
         alignItems: 'center'
       }}>
-        <img width="150px" src={bullSrc} alt="cowswap" />
+        <img width="100px" src={bullSrc} alt="cowswap" />
         <Heading>{label}</Heading>
       </div>
     </CardHeader>

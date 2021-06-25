@@ -31,7 +31,7 @@ const NUMBER_OF_FARMS_VISIBLE = 12
 const Farms: React.FC = () => {
   const { path } = useRouteMatch()
   const { pathname } = useLocation()
-  const { data: farmsLP, userDataLoaded } = useFarms()
+  const { data: farmsLP } = useFarms()
   const cakePrice = usePriceCakeBusd()
   // const [viewMode, setViewMode] = usePersistState(ViewMode.CARD, 'pancake_farm_view')
   const { account } = useWeb3React()

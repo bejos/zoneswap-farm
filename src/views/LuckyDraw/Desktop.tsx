@@ -1,32 +1,16 @@
 import React, { useState } from 'react'
-import { Flex, LinkExternal, Box } from '@cowswap/uikit'
+import { Flex, Box } from '@cowswap/uikit'
 import styled from 'styled-components'
 import MobileMenu from './components/MobileMenu'
 import Rankings from './Rankings'
 import Draws from './Draws'
 import BigJackpot from './Jackpot'
-import fieldSrc from './images/field.png'
 
 const StyledDesktop = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
   max-height: 100%;
-`
-
-const StyledImage = styled.img`
-  ${({ theme }) => theme.mediaQueries.xs} {
-    display: none;
-  }
-  ${({ theme }) => theme.mediaQueries.sm} {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    z-index: -1;
-  }
 `
 
 const View = styled.div<{ isVisible: boolean }>`

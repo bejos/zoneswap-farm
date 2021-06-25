@@ -11,7 +11,8 @@ import goudaJackpotSrc from './images/gouda.png'
 const FlexColumn = styled.div`
   display: flex;
   flex-direction: row;
-  margin-bottom: 15px
+  margin-bottom: 15px;
+  width: 100%
 `
 
 const MAX_TIMES = 200
@@ -42,23 +43,21 @@ const Jackpot = ({ handleDraw, spinLoading, jackpot, goudaBalance, isMobile}) =>
       }}>
         <div style={{
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center'
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between'
         }}>
-          <img width="150px" src={bullSrc} alt="cowswap" />
-          <Text color="#FFA600" fontSize="30px" mb="15px">
-            Big Jackpot
-          </Text>
+          <FlexColumn>
+            <div>
+              <Text fontSize="22px" color="#FFA600"> BIG JACKPOT</Text>
+              <Image src={goudaJackpotSrc} alt="gouda" width={60} height={60} />
+              <Text fontSize="20px">Prize: {jackpot}</Text>
+            </div>
+          </FlexColumn>
+          <img width="100px" src={bullSrc} alt="cowswap" />
         </div>
       </CardHeader>
       <CardBody>
-        <FlexColumn>
-          <Image src={goudaJackpotSrc} alt="gouda" width={50} height={50} />
-          <div style={{ marginLeft: 30 }}>
-            <Text color="textSubtle">Total prize:</Text>
-            <Text fontSize="22px">{jackpot}</Text>
-          </div>
-        </FlexColumn>
         {allowance.toNumber() ? (<>
           <SpinInput
             onSelectMax={handleSelectMaxJackpot}
