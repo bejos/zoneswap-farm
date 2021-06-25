@@ -10,7 +10,7 @@ import {
   ChartIcon,
   IconButton,
 } from '@cowswap/uikit'
-import TicketIcon from '../icons/Ticket'
+import TicketIcon from '../icons/Nft'
 import useSwiper from '../hooks/useSwiper'
 
 const ButtonNav = styled.div`
@@ -47,7 +47,7 @@ const MobileMenu = ({setView, activeIndex, isMobile, jackpot}) => {
             <Cards color="currentColor" />
           </ButtonMenuItem>
           <ButtonMenuItem style={{ position: 'relative'}}>
-            <TicketIcon color="currentColor" /><div style={{ position: 'absolute', bottom: '30px', color: '#ebebeb', background: '#FFA600', padding: '5px 7px', borderRadius: '8px', transform: 'rotate(-5deg)'}}>{jackpot}</div>
+            <TicketIcon color="currentColor" />
           </ButtonMenuItem>
           <ButtonMenuItem disabled={!account}>
             <ChartIcon color="currentColor" />
