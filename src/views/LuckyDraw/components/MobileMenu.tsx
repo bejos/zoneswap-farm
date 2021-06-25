@@ -30,7 +30,7 @@ const StyledMobileMenu = styled.div`
   height: 64px;
 `
 
-const MobileMenu = ({setView, activeIndex, isMobile}) => {
+const MobileMenu = ({setView, activeIndex, isMobile, jackpot}) => {
   const { swiper } = useSwiper()
   const { account } = useWeb3React()
 
@@ -46,8 +46,8 @@ const MobileMenu = ({setView, activeIndex, isMobile}) => {
           <ButtonMenuItem>
             <Cards color="currentColor" />
           </ButtonMenuItem>
-          <ButtonMenuItem>
-            <TicketIcon color="currentColor" />
+          <ButtonMenuItem style={{ position: 'relative'}}>
+            <TicketIcon color="currentColor" /><div style={{ position: 'absolute', bottom: '30px', color: '#ebebeb', background: '#FFA600', padding: '5px 7px', borderRadius: '8px', transform: 'rotate(-5deg)'}}>{jackpot}</div>
           </ButtonMenuItem>
           <ButtonMenuItem disabled={!account}>
             <ChartIcon color="currentColor" />

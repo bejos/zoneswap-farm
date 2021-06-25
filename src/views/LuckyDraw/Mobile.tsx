@@ -50,7 +50,7 @@ const Mobile = ({ handleDraw, goudaBalance, spinLoading, account, jackpot, topWi
           </Flex>
         </View>
       </Box>
-      <MobileMenu isMobile={isMobile} setView={setView} activeIndex={activeIndex} />
+      <MobileMenu jackpot={jackpot} isMobile={isMobile} setView={setView} activeIndex={activeIndex} />
     </StyledMobile>
   )
 }

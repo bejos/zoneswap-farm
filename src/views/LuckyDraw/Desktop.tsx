@@ -45,7 +45,7 @@ const LuckyDraw = ({ handleDraw, goudaBalance, spinLoading, account, jackpot, to
             </Flex>
           </View>
         </Box>
-        <MobileMenu isMobile={false} setView={setView} activeIndex={activeIndex} />
+        <MobileMenu jackpot={jackpot} isMobile={false} setView={setView} activeIndex={activeIndex} />
       </StyledDesktop>
     </>
   )

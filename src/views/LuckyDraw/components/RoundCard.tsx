@@ -4,6 +4,7 @@ import React, { useState, useCallback } from 'react'
 import { Text, Button, AutoRenewIcon, Heading, CardBody, CardHeader, Card } from '@cowswap/uikit'
 import { useLuckyDrawApprove } from 'hooks/useApprove'
 import { useLuckyDrawAllowance } from 'hooks/useAllowance'
+
 import TicketIcon from '../icons/Ticket'
 import SpinInput from './SpinInput'
 import bullSrc from '../images/01.png'
