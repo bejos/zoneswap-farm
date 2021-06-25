@@ -4,6 +4,7 @@ import SwiperCore, { Keyboard, Mousewheel } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Box } from '@cowswap/uikit'
 import 'swiper/swiper.min.css'
+import BigJackpot from './Jackpot'
 import RoundCard from './components/RoundCard'
 import useSwiper from './hooks/useSwiper'
 import useOnNextRound from './hooks/useOnNextRound'
@@ -20,7 +21,7 @@ const StyledSwiper = styled.div`
     width: 320px;
   }
 `
-const draws = [
+const prizes = [
   {
     label: '500 Gouda',
     type: 500
@@ -51,11 +52,15 @@ const factoryTime = {
   '500': 4,
 }
 
-const Draws = ({ handleDraw, spinLoading, account, goudaBalance}) => {
+const Draws = ({ handleDraw, spinLoading, account, goudaBalance, jackpot }) => {
   const { setSwiper } = useSwiper()
-  const initialIndex = Math.floor(draws.length / 2)
-
+  const initialIndex = Math.floor(prizes.length / 2)
   useOnNextRound()
+
+  const half = Math.ceil(prizes.length / 2);    
+
+  const firstHalf = prizes.slice(0, half)
+  const secondHalf = prizes.slice(-half)
 
   return (
     <Box overflowX="hidden" overflowY="auto">
@@ -72,7 +77,15 @@ const Draws = ({ handleDraw, spinLoading, account, goudaBalance}) => {
           keyboard
           resizeObserver
         >
-          {draws.map((round) => (
+          {firstHalf.map((round) => (
+            <SwiperSlide key={round.type}>
+              <RoundCard label={round.label} type={round.type} handleDraw={handleDraw} spinLoading={spinLoading} account={account} goudaBalance={goudaBalance} goudaPerTime={factoryTime[round.type]} />
+            </SwiperSlide>
+          ))}
+          <SwiperSlide key={0}>
+            <BigJackpot jackpot={jackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
+          </SwiperSlide>
+          {secondHalf.map((round) => (
             <SwiperSlide key={round.type}>
               <RoundCard label={round.label} type={round.type} handleDraw={handleDraw} spinLoading={spinLoading} account={account} goudaBalance={goudaBalance} goudaPerTime={factoryTime[round.type]} />
             </SwiperSlide>

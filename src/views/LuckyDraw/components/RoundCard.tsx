@@ -41,7 +41,7 @@ const RoundCard = ({type, handleDraw, spinLoading, account, goudaBalance, goudaP
     </CardHeader>
     <CardBody>
     {!allowance.toNumber() ? 
-      <Button disabled={approving} width="100%" onClick={onApprove} endIcon={approving ? <AutoRenewIcon spin color="currentColor" /> : null}>
+      <Button variant="subtle" disabled={approving} width="100%" onClick={onApprove} endIcon={approving ? <AutoRenewIcon spin color="currentColor" /> : null}>
         {approving ? 'Approving ...' : 'Approve'}
       </Button>
       : account ? <>

@@ -114,7 +114,12 @@ const LuckyDraw = () => {
       const [, resWon] = await luckyDrawContract.methods.getUser(account).call()
       setSpinLoading(false)
       const wonThisRound = new BigNumber(resWon - wonGouda).div(DEFAULT_TOKEN_DECIMAL)
-
+      
+      goudaContract.methods.balanceOf(account).call()
+        .then(balance => {
+          setGoudaBalance(new BigNumber(balance).div(DEFAULT_TOKEN_DECIMAL))
+        })
+        
       if (resWon > wonGouda) {
         setWonGouda(resWon)
         setConfettiShown(true)
@@ -131,7 +136,7 @@ const LuckyDraw = () => {
       toastError('Lucky Draw', 'Please try again !')
       return setSpinLoading(false)
     }
-  }, [wonGouda, luckyDrawContract, account, luckyDrawAddress, setSpinLoading, toastSuccess, toastError])
+  }, [wonGouda, luckyDrawContract, account, luckyDrawAddress, setSpinLoading, toastSuccess, toastError, goudaContract])
 
 
   return (

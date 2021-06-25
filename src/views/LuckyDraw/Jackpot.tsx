@@ -17,7 +17,7 @@ const FlexColumn = styled.div`
 
 const MAX_TIMES = 200
 
-const Jackpot = ({ handleDraw, spinLoading, jackpot, goudaBalance, isMobile}) => {
+const Jackpot = ({ handleDraw, spinLoading, jackpot, goudaBalance }) => {
   const [jackpotTimes, setJackpotTimes] = useState('0')
   const allowance = useLuckyDrawAllowance()
   const { onApprove, loading: approving } = useLuckyDrawApprove()
@@ -35,9 +35,7 @@ const Jackpot = ({ handleDraw, spinLoading, jackpot, goudaBalance, isMobile}) =>
   const outOfMax = Number(jackpotTimes) > MAX_TIMES
 
   return (
-    <Card style={{
-      width: isMobile ? "90%" : "500px"
-    }}>
+    <Card>
       <CardHeader style={{
         // color: "#FFA600",
       }}>
@@ -83,7 +81,7 @@ const Jackpot = ({ handleDraw, spinLoading, jackpot, goudaBalance, isMobile}) =>
             {outOfMax ? `Out of maximum (${MAX_TIMES})` : 'SPIN'}
           </Button>
           </>): 
-        <Button mt="15px" disabled={approving} width="100%" onClick={onApprove} endIcon={approving ? <AutoRenewIcon spin color="currentColor" /> : null}>
+        <Button variant="subtle" mt="15px" disabled={approving} width="100%" onClick={onApprove} endIcon={approving ? <AutoRenewIcon spin color="currentColor" /> : null}>
           {approving ? 'Approving ...' : 'Approve'}
         </Button>}
       </CardBody>
