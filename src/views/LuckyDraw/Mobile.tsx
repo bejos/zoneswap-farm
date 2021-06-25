@@ -41,7 +41,7 @@ const Mobile = ({ handleDraw, goudaBalance, spinLoading, account, jackpot, topWi
         </View>
         <View isVisible={activeIndex === 1}>
           <Flex alignItems="center" height="100%" justifyContent="center">
-            <BigJackpot jackpot={jackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
+            <BigJackpot handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
           </Flex>
         </View>
         <View isVisible={activeIndex === 2}>

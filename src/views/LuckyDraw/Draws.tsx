@@ -43,7 +43,7 @@ const prizes = [
     type: 5
   },
   {
-    label: 'Random Gouda',
+    label: 'Magic Gouda',
     type: -1
   },
 ]
@@ -88,7 +88,7 @@ const Draws = ({ handleDraw, spinLoading, account, goudaBalance, jackpot }) => {
             </SwiperSlide>
           ))}
           <SwiperSlide key={0}>
-            <BigJackpot jackpot={jackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
+            <BigJackpot handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
           </SwiperSlide>
           {secondHalf.map((round) => (
             <SwiperSlide key={round.type}>

@@ -7,7 +7,6 @@ import { useLuckyDrawAllowance } from 'hooks/useAllowance'
 
 import TicketIcon from '../icons/Ticket'
 import SpinInput from './SpinInput'
-import bullSrc from '../images/01.png'
 
 const MAX_TIMES = 200
 
@@ -36,7 +35,7 @@ const RoundCard = ({type, handleDraw, spinLoading, account, goudaBalance, goudaP
         flexDirection: 'column',
         alignItems: 'center'
       }}>
-        <img width="100px" src={bullSrc} alt="cowswap" />
+        <img width="120px" src={`../images/luckydraw/${type}.png`} alt="cowswap" />
         <Heading>{label}</Heading>
       </div>
     </CardHeader>

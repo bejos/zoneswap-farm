@@ -1,30 +1,30 @@
 import React, { useState, useCallback } from 'react'
-import { Text, Button, AutoRenewIcon, Card, Image, CardBody, CardHeader } from '@cowswap/uikit'
+import { Text, Button, AutoRenewIcon, Card, CardBody, CardHeader } from '@cowswap/uikit'
 import styled from 'styled-components'
 import { useLuckyDrawApprove } from 'hooks/useApprove'
 import { useLuckyDrawAllowance } from 'hooks/useAllowance'
-import bullSrc from './images/pngwing.com.png'
+import bullSrc from './images/taurus.png'
 import TicketIcon from './icons/Ticket'
 import SpinInput from './components/SpinInput'
-import goudaJackpotSrc from './images/gouda.png'
 
 const FlexColumn = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  margin-bottom: 15px
+  margin-bottom: 15px;
+  align-items: center;
+
 `
 
 const CowType = styled.img`
-  position: absolute;
   top: 10px;
   right: 10px;
-  width: 50%
+  width: 40%
 `
 
 const MAX_TIMES = 200
 
-const Jackpot = ({ handleDraw, spinLoading, jackpot, goudaBalance }) => {
+const Jackpot = ({ handleDraw, spinLoading, goudaBalance }) => {
   const [jackpotTimes, setJackpotTimes] = useState('0')
   const allowance = useLuckyDrawAllowance()
   const { onApprove, loading: approving } = useLuckyDrawApprove()
@@ -53,19 +53,16 @@ const Jackpot = ({ handleDraw, spinLoading, jackpot, goudaBalance }) => {
           justifyContent: 'space-between'
         }}>
           <FlexColumn>
-            <Text fontSize="22px" color="#FFA600">BIG JACKPOT</Text>
+            <div>
+              <Text fontSize="20px" color="#FFA600">BIG JACKPOT</Text>
+              <Text fontSize="14px" color="textSubtle">Taurus NFT</Text>
+            </div>
+            
             <CowType width="120px" src={bullSrc} alt="cowswap" />
           </FlexColumn>
         </div>
       </CardHeader>
       <CardBody>
-        <FlexColumn>
-          <Image src={goudaJackpotSrc} mr="15px" alt="gouda" width={60} height={60} />
-          <div>
-            <Text fontSize="14px" color="textSubtle">Prize:</Text>
-            <Text fontSize="22px">{jackpot}</Text>
-          </div>
-        </FlexColumn>
         {allowance.toNumber() ? (<>
           <SpinInput
             onSelectMax={handleSelectMaxJackpot}
@@ -77,9 +74,6 @@ const Jackpot = ({ handleDraw, spinLoading, jackpot, goudaBalance }) => {
           />
           <Text fontSize="14px" color="textSubtle" textAlign="left">~{Number(jackpotTimes)} GOUDA</Text>
           <Button
-            // style={disabled || outOfMax ? {} : {
-            //   color: "#FFA600"
-            // }}
             variant="subtle"
             width="100%"
             mt="15px"
