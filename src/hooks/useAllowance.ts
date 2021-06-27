@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import { Contract } from 'web3-eth-contract'
-import { getLotteryAddress, getLuckyDrawAddress } from 'utils/addressHelpers'
+import { getLotteryAddress, getLuckyDrawAddress, getLuckyDrawNFTAddress } from 'utils/addressHelpers'
 import { BIG_ZERO } from 'utils/bigNumber'
-import { useCake } from './useContract'
+import { useCake, useLuckyDrawNFT } from './useContract'
 import useRefresh from './useRefresh'
 
 // Retrieve lottery allowance
@@ -66,6 +66,26 @@ export const useLuckyDrawAllowance = () => {
       fetchAllowance()
     }
   }, [account, cakeContract, fastRefresh])
+
+  return allowance
+}
+
+export const useLuckyDrawNFTAllowance = () => {
+  const [allowance, setAllowance] = useState(false)
+  const { account } = useWeb3React()
+  const luckyDrawNFTContract = useLuckyDrawNFT(getLuckyDrawNFTAddress())
+  const { fastRefresh } = useRefresh()
+  useEffect(() => {
+    const fetchAllowance = async () => {
+      const tokenId = await luckyDrawNFTContract.methods.tokenOfOwnerByIndex(account, 0).call()
+      const res = await luckyDrawNFTContract.methods.getApproved(tokenId).call()
+      setAllowance(res === getLuckyDrawAddress())
+    }
+
+    if (account) {
+      fetchAllowance()
+    }
+  }, [account, fastRefresh, luckyDrawNFTContract])
 
   return allowance
 }

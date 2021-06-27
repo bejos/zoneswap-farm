@@ -28,7 +28,7 @@ const View = styled.div<{ isVisible: boolean }>`
   visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
 `
 
-const Mobile = ({ handleDraw, goudaBalance, spinLoading, account, jackpot, topWinnersWithBalance, isMobile, typeRankings, handleTypeRankingsClick }) => {
+const Mobile = ({ claimJackpot, handleDraw, goudaBalance, spinLoading, account, topWinnersWithBalance, isMobile, typeRankings, handleTypeRankingsClick, nftBalance }) => {
   const [activeIndex, setView] = useState(0)
 
   return (
@@ -36,12 +36,12 @@ const Mobile = ({ handleDraw, goudaBalance, spinLoading, account, jackpot, topWi
       <Box height="100%" overflow="hidden" position="relative">
         <View isVisible={activeIndex === 0}>
           <Flex alignItems="center" height="100%">
-            <Draws jackpot={jackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
+            <Draws claimJackpot={claimJackpot} nftBalance={nftBalance} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
           </Flex>
         </View>
         <View isVisible={activeIndex === 1}>
           <Flex alignItems="center" height="100%" justifyContent="center">
-            <BigJackpot handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
+            <BigJackpot claimJackpot={claimJackpot} nftBalance={nftBalance} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
           </Flex>
         </View>
         <View isVisible={activeIndex === 2}>
@@ -50,7 +50,7 @@ const Mobile = ({ handleDraw, goudaBalance, spinLoading, account, jackpot, topWi
           </Flex>
         </View>
       </Box>
-      <MobileMenu jackpot={jackpot} isMobile={isMobile} setView={setView} activeIndex={activeIndex} />
+      <MobileMenu isMobile={isMobile} setView={setView} activeIndex={activeIndex} />
     </StyledMobile>
   )
 }

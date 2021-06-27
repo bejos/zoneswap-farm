@@ -3,13 +3,14 @@ import Confetti from 'react-confetti'
 import BigNumber from 'bignumber.js';
 import { useMatchBreakpoints } from '@cowswap/uikit'
 import { useWeb3React } from '@web3-react/core'
-import { getLuckyDrawContract } from 'utils/contractHelpers'
+import { getLuckyDrawContract, getLuckyDrawNFTContract } from 'utils/contractHelpers'
 import multicall from 'utils/multicall'
-import { getLuckyDrawAddress, getAddress } from 'utils/addressHelpers'
+import { getLuckyDrawAddress, getAddress, getLuckyDrawNFTAddress } from 'utils/addressHelpers'
 import tokens from 'config/constants/tokens'
 import useToast from 'hooks/useToast'
 import useWeb3 from 'hooks/useWeb3'
 import { useBlock } from 'state/hooks'
+import styled from 'styled-components'
 import { DEFAULT_TOKEN_DECIMAL } from 'config'
 import luckyDrawAbi from 'config/abi/luckyDraw.json'
 import { BIG_ZERO } from 'utils/bigNumber';
@@ -19,6 +20,17 @@ import Container from './components/Container'
 import Desktop from './Desktop'
 import Mobile from './Mobile'
 
+const StyledImage = styled.img`
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 58px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  z-index: -1;
+  opacity: 0.7;
+`
+
 const LuckyDraw = () => {
   const { isLg, isXl } = useMatchBreakpoints()
   const isDesktop = isLg || isXl
@@ -27,7 +39,7 @@ const LuckyDraw = () => {
   const { toastSuccess, toastError } = useToast()
   const [confettiShown, setConfettiShown] = useState(false)
   const [wonGouda, setWonGouda] = useState(undefined)
-  const [jackpot, setJackpot] = useState('0,0')
+  const [nftBalance, setNftBalance] = useState(BIG_ZERO)
   const [topWinners, setTopWinners] = useState([])
   const [topPlayers, setTopPlayers] = useState([])
   const [topWinnersWithBalance, setTopWinnersWithBalance] = useState([])
@@ -38,12 +50,17 @@ const LuckyDraw = () => {
   const [goudaBalance, setGoudaBalance] = useState(BIG_ZERO)
 
   const luckyDrawAddress = getLuckyDrawAddress()
+  const luckyDrawNFTAddress = getLuckyDrawNFTAddress()
 
   const goudaContract = useERC20(getAddress(tokens.cow.address))
 
   const luckyDrawContract = useMemo(() => {
     return getLuckyDrawContract(luckyDrawAddress, web3)
   }, [luckyDrawAddress, web3])
+
+  const luckyDrawNFTContract = useMemo(() => {
+    return getLuckyDrawNFTContract(luckyDrawNFTAddress, web3)
+  }, [luckyDrawNFTAddress, web3])
 
   const handleTypeRankingsClick = (newIndex) => setTypeRankings(newIndex)
 
@@ -58,10 +75,6 @@ const LuckyDraw = () => {
           .then(resp => {
             setTopPlayers(resp)
           })
-        luckyDrawContract.methods.bigJackpot().call()
-          .then(resp => {
-            setJackpot(new BigNumber(resp).div(DEFAULT_TOKEN_DECIMAL).toNumber().toLocaleString('en-US', { maximumFractionDigits: 2 }))
-          })
         luckyDrawContract.methods.getUser(account).call()
           .then(([, won]) => {
             setWonGouda(won)
@@ -70,11 +83,15 @@ const LuckyDraw = () => {
           .then(balance => {
             setGoudaBalance(new BigNumber(balance).div(DEFAULT_TOKEN_DECIMAL))
           })
+        luckyDrawNFTContract.methods.balanceOf(account).call()
+          .then(balance => {
+            setNftBalance(new BigNumber(balance))
+          })
       }
     } catch (error) {
       console.error(error)
     }
-  }, [luckyDrawContract, account, currentBlock, goudaContract])
+  }, [luckyDrawContract, account, currentBlock, goudaContract, luckyDrawNFTContract])
 
   useEffect(() => {
     try {
@@ -99,9 +116,35 @@ const LuckyDraw = () => {
     
   }, [currentBlock, luckyDrawContract, account, luckyDrawAddress, topWinners, topPlayers, typeRankings])
 
+  const claimJackpot = useCallback(async () => {
+    try {
+      const tokenId = await luckyDrawNFTContract.methods.tokenOfOwnerByIndex(account, 0).call()
+      setSpinLoading(true)
+      await luckyDrawContract.methods.claimBigJackpot(tokenId)
+        .send({ from: account, gas: 200000 })
+        .on('transactionHash', (tx) => {
+          return tx.transactionHash
+        })
+
+      setSpinLoading(false)
+      setConfettiShown(true)
+      setTimeout(() => setConfettiShown(false), 5000)
+      return toastSuccess(
+        'Lucky Draw',
+        `Congratulations! You have claimed NFT`,
+      )
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.debug(e)
+      toastError('Claim BigJackpot', 'Please try again !')
+      return setSpinLoading(false)
+    }
+  }, [luckyDrawContract, luckyDrawNFTContract, account, setSpinLoading, toastError, toastSuccess])
+
   const handleDraw = useCallback(async (type, times) => {
     try {
       setSpinLoading(true)
+      const isJackpotSpin = type === '0'
       const args = type < 0 ? [times] : [type, times]
       const gasAmount = await luckyDrawContract.methods.randoms(...args).estimateGas({from: account, to: luckyDrawAddress})
 
@@ -121,7 +164,7 @@ const LuckyDraw = () => {
           setGoudaBalance(new BigNumber(balance).div(DEFAULT_TOKEN_DECIMAL))
         })
         
-      if (resWon > wonGouda) {
+      if (!isJackpotSpin && resWon > wonGouda) {
         setWonGouda(resWon)
         setConfettiShown(true)
         setTimeout(() => setConfettiShown(false), 5000)
@@ -130,6 +173,19 @@ const LuckyDraw = () => {
           `Congratulations! You Won ${wonThisRound} Gouda`,
         )
       }
+      if (isJackpotSpin) {
+        const respNftBalance = await luckyDrawNFTContract.methods.balanceOf(account).call().then(BigNumber)
+
+        setNftBalance(respNftBalance)
+        if (respNftBalance.gt(0)) {
+          setConfettiShown(true)
+          setTimeout(() => setConfettiShown(false), 5000)
+          return toastSuccess(
+            'Lucky Draw',
+            `Congratulations! You Won Big Jackpot`,
+          )
+        }
+      }
       return toastError('Lucky Draw', 'Better luck next time!!!')
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -137,17 +193,22 @@ const LuckyDraw = () => {
       toastError('Lucky Draw', 'Please try again !')
       return setSpinLoading(false)
     }
-  }, [wonGouda, luckyDrawContract, account, luckyDrawAddress, setSpinLoading, toastSuccess, toastError, goudaContract])
+  }, [wonGouda, luckyDrawContract, account, luckyDrawAddress, setSpinLoading, toastSuccess, toastError, goudaContract, luckyDrawNFTContract])
 
 
   return (
-    <SwiperProvider>
-      <Container>
-        {confettiShown ? <Confetti /> : null}
-        {isDesktop ? <Desktop typeRankings={typeRankings} handleTypeRankingsClick={handleTypeRankingsClick} topWinnersWithBalance={topWinnersWithBalance} jackpot={jackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
-        : <Mobile isMobile typeRankings={typeRankings} handleTypeRankingsClick={handleTypeRankingsClick} topWinnersWithBalance={topWinnersWithBalance} jackpot={jackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />}
-      </Container>
-    </SwiperProvider>
+    <>
+      <SwiperProvider>
+        <Container>
+          {confettiShown ? <Confetti /> : null}
+          {isDesktop ? 
+            <Desktop claimJackpot={claimJackpot} nftBalance={nftBalance} typeRankings={typeRankings} handleTypeRankingsClick={handleTypeRankingsClick} topWinnersWithBalance={topWinnersWithBalance} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} /> :
+            <Mobile claimJackpot={claimJackpot} nftBalance={nftBalance} isMobile typeRankings={typeRankings} handleTypeRankingsClick={handleTypeRankingsClick} topWinnersWithBalance={topWinnersWithBalance} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
+          }
+        </Container>
+      </SwiperProvider>
+      <StyledImage src="/images/green-field.svg" />
+    </>
   )
 }
 

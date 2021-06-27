@@ -21,6 +21,7 @@ import {
   getCakeVaultContract,
   getPredictionsContract,
   getLuckyDrawContract,
+  getLuckyDrawNFTContract,
 } from 'utils/contractHelpers'
 
 /**
@@ -45,6 +46,11 @@ export const useERC20 = (address: string) => {
 export const useLuckyDraw = (address: string) => {
   const web3 = useWeb3()
   return useMemo(() => getLuckyDrawContract(address, web3), [address, web3])
+}
+
+export const useLuckyDrawNFT = (address: string) => {
+  const web3 = useWeb3()
+  return useMemo(() => getLuckyDrawNFTContract(address, web3), [address, web3])
 }
 
 /**

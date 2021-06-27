@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState, useCallback } from 'react'
-
-import { Text, Button, AutoRenewIcon, Heading, CardBody, CardHeader, Card } from '@cowswap/uikit'
+import styled from 'styled-components'
+import { Text, Button, AutoRenewIcon, CardBody, CardHeader, Card, Flex } from '@cowswap/uikit'
 import { useLuckyDrawApprove } from 'hooks/useApprove'
 import { useLuckyDrawAllowance } from 'hooks/useAllowance'
 
@@ -10,7 +10,28 @@ import SpinInput from './SpinInput'
 
 const MAX_TIMES = 200
 
-const RoundCard = ({type, handleDraw, spinLoading, account, goudaBalance, goudaPerTime, label}) => {
+const CardBorder = styled.div`
+  filter: blur(6px);
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  bottom: -4px;
+  left: -4px;
+  z-index: -1;
+  background: linear-gradient(45deg,rgb(255,0,0) 0%,rgb(255,154,0) 10%,rgb(208,222,33) 20%,rgb(79,220,74) 30%,#e67b57 40%,#ed4b9e 50%,rgb(28,127,238) 60%,rgb(95,21,242) 70%,rgb(186,12,248) 80%,rgb(251,7,217) 90%,rgb(255,0,0) 100%) 0% 0% / 300% 300%;
+  animation: 2s linear 0s infinite normal none running ilqnTz;
+  border-radius: 16px;
+`
+
+const CardOutter = styled(Card)`
+  align-self: baseline;
+  border-radius: 16px;
+  box-shadow: rgb(25 19 38 / 10%) 0px 2px 12px -8px, rgb(25 19 38 / 5%) 0px 1px 1px;
+  position: relative;
+  overflow: inherit;
+`
+
+const RoundCard = ({ type, handleDraw, spinLoading, account, goudaBalance, goudaPerTime }) => {
   const [times, setTimes] = useState('0')
   const allowance = useLuckyDrawAllowance()
   const { onApprove, loading: approving } = useLuckyDrawApprove()
@@ -28,16 +49,15 @@ const RoundCard = ({type, handleDraw, spinLoading, account, goudaBalance, goudaP
   const outOfMax = Number(times) > MAX_TIMES
   const disabled = Number(times) < 1
 
-  return <Card key={type}>
-    <CardHeader>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center'
-      }}>
-        <img width="120px" src={`../images/luckydraw/${type}.png`} alt="cowswap" />
-        <Heading>{label}</Heading>
-      </div>
+  return <CardOutter key={type}>
+    <CardBorder />
+    <CardHeader style={{
+      borderRadius: '12px 12px 0 0 ',
+      padding: 0
+    }}>
+      <Flex alignItems="center" justifyContent="space-between">
+        <img style={{ borderRadius: '12px 12px 0 0 '}} src={`/images/luckydraw/${type}.png`} alt="cowswap" />
+      </Flex>
     </CardHeader>
     <CardBody>
     {!allowance.toNumber() ? 
@@ -76,7 +96,7 @@ const RoundCard = ({type, handleDraw, spinLoading, account, goudaBalance, goudaP
       </Button>
     }
     </CardBody>
-  </Card>
+  </CardOutter>
 }
 
 export default RoundCard

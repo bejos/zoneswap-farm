@@ -30,7 +30,7 @@ const StyledMobileMenu = styled.div`
   height: 64px;
 `
 
-const MobileMenu = ({setView, activeIndex, isMobile, jackpot}) => {
+const MobileMenu = ({setView, activeIndex, isMobile}) => {
   const { swiper } = useSwiper()
   const { account } = useWeb3React()
 

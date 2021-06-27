@@ -77,7 +77,7 @@ const SpinInput: React.FC<ModalInputProps> = ({
             placeholder="0"
             value={value}
           />
-          <Button variant="secondary" scale="sm" onClick={onSelectMax} mr="8px">
+          <Button variant="subtle" scale="sm" onClick={onSelectMax} mr="8px">
             Max
           </Button>
           <img style={{ marginRight: 5, transform: 'translateY(5px)' }} alt="gouda" src={goudaIcon} height={20} width={20} />

@@ -17,6 +17,9 @@ export const getPresaleLPAddress = () => {
 export const getLuckyDrawAddress = () => {
   return getAddress(addresses.luckyDraw)
 }
+export const getLuckyDrawNFTAddress = () => {
+  return getAddress(addresses.luckyDrawNFT)
+}
 export const getAirdropAddress = () => {
   return getAddress(addresses.airdrop)
 }

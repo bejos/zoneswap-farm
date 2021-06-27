@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import SwiperCore, { Keyboard, Mousewheel } from 'swiper'
+import SwiperCore, { Keyboard, Mousewheel, EffectFade } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Box } from '@cowswap/uikit'
 import 'swiper/swiper.min.css'
@@ -9,18 +9,20 @@ import RoundCard from './components/RoundCard'
 import useSwiper from './hooks/useSwiper'
 import useOnNextRound from './hooks/useOnNextRound'
 
-SwiperCore.use([Keyboard, Mousewheel])
+SwiperCore.use([Keyboard, Mousewheel, EffectFade])
 
 const StyledSwiper = styled.div`
   .swiper-wrapper {
     align-items: center;
     display: flex;
+    padding: 15px 0;
   }
 
   .swiper-slide {
     width: 320px;
   }
 `
+
 const prizes = [
   {
     label: '500 Gouda',
@@ -29,6 +31,10 @@ const prizes = [
   {
     label: '100 Gouda',
     type: 100
+  },
+  {
+    label: 'Magic Gouda',
+    type: -1
   },
   {
     label: '50 Gouda',
@@ -42,10 +48,6 @@ const prizes = [
     label: '5 Gouda',
     type: 5
   },
-  {
-    label: 'Magic Gouda',
-    type: -1
-  },
 ]
 
 const factoryTime = {
@@ -57,7 +59,7 @@ const factoryTime = {
   '500': 4,
 }
 
-const Draws = ({ handleDraw, spinLoading, account, goudaBalance, jackpot }) => {
+const Draws = ({ handleDraw, spinLoading, account, goudaBalance, nftBalance, claimJackpot }) => {
   const { setSwiper } = useSwiper()
   const initialIndex = Math.floor(prizes.length / 2)
   useOnNextRound()
@@ -73,7 +75,7 @@ const Draws = ({ handleDraw, spinLoading, account, goudaBalance, jackpot }) => {
         <Swiper
           initialSlide={initialIndex}
           onSwiper={setSwiper}
-          spaceBetween={16}
+          spaceBetween={20}
           slidesPerView="auto"
           freeMode
           freeModeSticky
@@ -84,15 +86,15 @@ const Draws = ({ handleDraw, spinLoading, account, goudaBalance, jackpot }) => {
         >
           {firstHalf.map((round) => (
             <SwiperSlide key={round.type}>
-              <RoundCard label={round.label} type={round.type} handleDraw={handleDraw} spinLoading={spinLoading} account={account} goudaBalance={goudaBalance} goudaPerTime={factoryTime[round.type]} />
+              <RoundCard type={round.type} handleDraw={handleDraw} spinLoading={spinLoading} account={account} goudaBalance={goudaBalance} goudaPerTime={factoryTime[round.type]} />
             </SwiperSlide>
           ))}
           <SwiperSlide key={0}>
-            <BigJackpot handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
+            <BigJackpot claimJackpot={claimJackpot} nftBalance={nftBalance} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
           </SwiperSlide>
           {secondHalf.map((round) => (
             <SwiperSlide key={round.type}>
-              <RoundCard label={round.label} type={round.type} handleDraw={handleDraw} spinLoading={spinLoading} account={account} goudaBalance={goudaBalance} goudaPerTime={factoryTime[round.type]} />
+              <RoundCard type={round.type} handleDraw={handleDraw} spinLoading={spinLoading} account={account} goudaBalance={goudaBalance} goudaPerTime={factoryTime[round.type]} />
             </SwiperSlide>
           ))}
         </Swiper>

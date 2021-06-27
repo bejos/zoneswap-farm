@@ -48,6 +48,7 @@ import predictionsAbi from 'config/abi/predictions.json'
 import presaleAbi from 'config/abi/presale.json'
 import airdropAbi from 'config/abi/airdrop.json'
 import luckyDrawAbi from 'config/abi/luckyDraw.json'
+import luckyDrawNFTAbi from 'config/abi/luckyDrawNFT.json'
 import presaleLPAbi from 'config/abi/presaleLP.json'
 
 const getContract = (abi: any, address: string, web3?: Web3) => {
@@ -60,6 +61,10 @@ export const getPresaleLPContract = (address: string, web3?: Web3) => {
 
 export const getLuckyDrawContract = (address: string, web3?: Web3) => {
   return getContract(luckyDrawAbi, address, web3)
+}
+
+export const getLuckyDrawNFTContract = (address: string, web3?: Web3) => {
+  return getContract(luckyDrawNFTAbi, address, web3)
 }
 
 export const getAirdropContract = (address: string, web3?: Web3) => {

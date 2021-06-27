@@ -5,8 +5,8 @@ import { ethers } from 'ethers'
 import { useAppDispatch } from 'state'
 import { updateUserAllowance, fetchFarmUserDataAsync } from 'state/actions'
 import { approve } from 'utils/callHelpers'
-import { getLuckyDrawAddress } from 'utils/addressHelpers'
-import { useMasterchef, useCake, useSousChef, useLottery } from './useContract'
+import { getLuckyDrawAddress, getLuckyDrawNFTAddress } from 'utils/addressHelpers'
+import { useMasterchef, useCake, useSousChef, useLottery, useLuckyDrawNFT } from './useContract'
 
 // Approve a Farm
 export const useApprove = (lpContract: Contract) => {
@@ -95,6 +95,27 @@ export const useLuckyDrawApprove = () => {
       return false
     }
   }, [account, cakeContract, luckyDrawAddress])
+
+  return { onApprove: handleApprove, loading }
+}
+
+export const useLuckyDrawNFTApprove = () => {
+  const [loading, setLoading] = useState(false)
+  const { account } = useWeb3React()
+  const luckyDrawNFTContract = useLuckyDrawNFT(getLuckyDrawNFTAddress())
+
+  const handleApprove = useCallback(async () => {
+    try {
+      setLoading(true)
+      const tokenId = await luckyDrawNFTContract.methods.tokenOfOwnerByIndex(account, 0).call()
+      const tx = await luckyDrawNFTContract.methods.approve(getLuckyDrawAddress(), tokenId).send({ from: account })
+      setLoading(false)
+      return tx
+    } catch (e) {
+      setLoading(false)
+      return false
+    }
+  }, [account, luckyDrawNFTContract])
 
   return { onApprove: handleApprove, loading }
 }
