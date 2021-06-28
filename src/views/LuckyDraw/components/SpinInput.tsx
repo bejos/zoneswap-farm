@@ -35,7 +35,7 @@ const StyledTokenInput = styled.div<InputProps>`
 
 const StyledInput = styled(Input)`
   box-shadow: none;
-  width: 150px;
+  width: 120px;
   padding: 0 5px;
 `
 
