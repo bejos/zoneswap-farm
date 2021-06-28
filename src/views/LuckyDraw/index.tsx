@@ -146,7 +146,10 @@ const LuckyDraw = () => {
       setSpinLoading(true)
       const isJackpotSpin = type === '0'
       const args = type < 0 ? [times] : [type, times]
-      const gasAmount = await luckyDrawContract.methods.randoms(...args).estimateGas({from: account, to: luckyDrawAddress})
+      const gasAmount = await luckyDrawContract.methods.randoms(...args).estimateGas({from: account, to: luckyDrawAddress}).catch(error => console.debug({
+        error,
+        method: 'estimateGas'
+      }))
 
       await luckyDrawContract.methods
         .randoms(...args)
