@@ -8,7 +8,7 @@ export default {
     56: '0x2c13bB2bF2D62AfE8A9086c4c19c459822C9088D',
   },
   luckyDraw: {
-    97: '0xf989ea25C4B107ca29eD5DD6A101Aa7FDa5d4987',
+    97: '0x733199fD1F8023952740Ba1f95BD220e720AF0fE',
     56: '0x4398ab800ba35b5dc6ea6d9752e324790eafe516',
   },
   luckyDrawNFT: {

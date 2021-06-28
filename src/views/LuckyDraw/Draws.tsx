@@ -1,15 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
-import SwiperCore, { Keyboard, Mousewheel, EffectFade } from 'swiper'
+import SwiperCore, { Keyboard, Mousewheel, EffectCoverflow } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Box } from '@cowswap/uikit'
 import 'swiper/swiper.min.css'
+import "swiper/components/effect-coverflow/effect-coverflow.min.css"
 import BigJackpot from './Jackpot'
 import RoundCard from './components/RoundCard'
 import useSwiper from './hooks/useSwiper'
 import useOnNextRound from './hooks/useOnNextRound'
 
-SwiperCore.use([Keyboard, Mousewheel, EffectFade])
+SwiperCore.use([Keyboard, Mousewheel, EffectCoverflow])
 
 const StyledSwiper = styled.div`
   .swiper-wrapper {
@@ -76,6 +77,14 @@ const Draws = ({ handleDraw, spinLoading, account, goudaBalance, nftBalance, cla
           initialSlide={initialIndex}
           onSwiper={setSwiper}
           spaceBetween={20}
+          effect='coverflow'
+          coverflowEffect={{
+            "rotate": 50,
+            "stretch": 0,
+            "depth": 100,
+            "modifier": 1,
+            "slideShadows": true
+          }}
           slidesPerView="auto"
           freeMode
           freeModeSticky
