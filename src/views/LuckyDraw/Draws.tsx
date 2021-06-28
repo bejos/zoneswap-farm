@@ -85,6 +85,7 @@ const Draws = ({ handleDraw, spinLoading, account, goudaBalance, nftBalance, cla
             "modifier": 1,
             "slideShadows": true
           }}
+          loop
           slidesPerView="auto"
           freeMode
           freeModeSticky
