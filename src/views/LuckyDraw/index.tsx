@@ -28,7 +28,7 @@ const StyledImage = styled.img`
   position: absolute;
   bottom: 0;
   z-index: -1;
-  opacity: 0.7;
+  opacity: 0.8;
 `
 
 const LuckyDraw = () => {
@@ -150,7 +150,7 @@ const LuckyDraw = () => {
 
       await luckyDrawContract.methods
         .randoms(...args)
-        .send({ from: account, gas: Math.floor(gasAmount * 1.2), to: luckyDrawAddress })
+        .send({ from: account, gas: Math.floor(gasAmount * 1.3), to: luckyDrawAddress })
         .on('transactionHash', (tx) => {
           return tx.transactionHash
         })

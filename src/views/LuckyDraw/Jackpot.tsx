@@ -95,7 +95,7 @@ const Jackpot = ({ handleDraw, spinLoading, goudaBalance, nftBalance, claimJackp
           <Flex alignItems="center" justifyContent="center">
             <Button
               variant="subtle"
-              width="80%"
+              width="100%"
               mt="15px"
               isLoading={spinLoading}
               disabled={spinLoading || disabled || outOfMax}
