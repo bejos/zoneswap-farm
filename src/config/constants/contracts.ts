@@ -12,7 +12,7 @@ export default {
     56: '0x4398ab800ba35b5dc6ea6d9752e324790eafe516',
   },
   luckyDrawNFT: {
-    97: '0x4B468e61270EA8d03a91dA34D9878e71D9A9d2F7',
+    97: '0xD59FAabeAd4c16189f4af8F132D0E956fA735284',
     56: '0x4398ab800ba35b5dc6ea6d9752e324790eafe516',
   },
   masterChef: {
