@@ -60,7 +60,7 @@ const factoryTime = {
   '500': 4,
 }
 
-const Draws = ({ handleDraw, spinLoading, account, goudaBalance, nftBalance, claimJackpot }) => {
+const Draws = ({ handleDraw, spinLoading, account, goudaBalance, wonJackpotNft, claimJackpot }) => {
   const { setSwiper } = useSwiper()
   const initialIndex = Math.floor(prizes.length / 2)
   useOnNextRound()
@@ -100,7 +100,7 @@ const Draws = ({ handleDraw, spinLoading, account, goudaBalance, nftBalance, cla
             </SwiperSlide>
           ))}
           <SwiperSlide key={0}>
-            <BigJackpot claimJackpot={claimJackpot} nftBalance={nftBalance} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
+            <BigJackpot claimJackpot={claimJackpot} wonJackpotNft={wonJackpotNft} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
           </SwiperSlide>
           {secondHalf.map((round) => (
             <SwiperSlide key={round.type}>

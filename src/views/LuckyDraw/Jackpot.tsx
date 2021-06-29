@@ -30,12 +30,12 @@ const CardOutter = styled(Card)`
 
 const MAX_TIMES = 200
 
-const Jackpot = ({ handleDraw, spinLoading, goudaBalance, nftBalance, claimJackpot }) => {
+const Jackpot = ({ handleDraw, spinLoading, goudaBalance, wonJackpotNft, claimJackpot }) => {
   const [jackpotTimes, setJackpotTimes] = useState('0')
   const allowance = useLuckyDrawAllowance()
-  const allowanceNFT = useLuckyDrawNFTAllowance()
+  const allowanceNFT = useLuckyDrawNFTAllowance(0)
   const { onApprove, loading: approving } = useLuckyDrawApprove()
-  const { onApprove: onApproveNFT, loading: approvingNFT } = useLuckyDrawNFTApprove()
+  const { onApprove: onApproveNFT, loading: approvingNFT } = useLuckyDrawNFTApprove(0)
   const handleChangeJackpot = (e: React.FormEvent<HTMLInputElement>) => {
     const { value: inputValue } = e.currentTarget
     setJackpotTimes(inputValue.replace(/[^0-9,]+/g, ''))
@@ -50,7 +50,7 @@ const Jackpot = ({ handleDraw, spinLoading, goudaBalance, nftBalance, claimJackp
   const outOfMax = Number(jackpotTimes) > MAX_TIMES
 
   const renderAction = () => {
-    if (nftBalance.gt(0)) {
+    if (wonJackpotNft.image !== '') {
       return (
         <CardBody>
           {allowanceNFT ? (<>

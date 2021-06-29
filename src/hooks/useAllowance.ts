@@ -70,14 +70,14 @@ export const useLuckyDrawAllowance = () => {
   return allowance
 }
 
-export const useLuckyDrawNFTAllowance = () => {
+export const useLuckyDrawNFTAllowance = (type) => {
   const [allowance, setAllowance] = useState(false)
   const { account } = useWeb3React()
   const luckyDrawNFTContract = useLuckyDrawNFT(getLuckyDrawNFTAddress())
   const { fastRefresh } = useRefresh()
   useEffect(() => {
     const fetchAllowance = async () => {
-      const tokenId = await luckyDrawNFTContract.methods.tokenOfOwnerByIndex(account, 0).call()
+      const tokenId = await luckyDrawNFTContract.methods.tokenOfOwnerByIndex(account, type).call()
       const res = await luckyDrawNFTContract.methods.getApproved(tokenId).call()
       setAllowance(res === getLuckyDrawAddress())
     }
@@ -85,7 +85,7 @@ export const useLuckyDrawNFTAllowance = () => {
     if (account) {
       fetchAllowance()
     }
-  }, [account, fastRefresh, luckyDrawNFTContract])
+  }, [account, fastRefresh, luckyDrawNFTContract, type])
 
   return allowance
 }

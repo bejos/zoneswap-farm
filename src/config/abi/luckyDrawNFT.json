@@ -312,6 +312,11 @@
         "internalType": "string",
         "name": "image",
         "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_type",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -328,6 +333,11 @@
         "internalType": "string",
         "name": "image",
         "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_type",
+        "type": "uint256"
       }
     ],
     "name": "mint",
