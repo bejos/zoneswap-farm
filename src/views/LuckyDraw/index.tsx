@@ -33,10 +33,7 @@ const StyledImage = styled.img`
 `
 
 const JACKPOT_TYPE = 0
-const EMPTY_JACKPOT = {
-  image: '',
-  _type: JACKPOT_TYPE
-}
+const MAGIC_TYPE = 1
 
 const LuckyDraw = () => {
   const { isLg, isXl } = useMatchBreakpoints()
@@ -46,7 +43,7 @@ const LuckyDraw = () => {
   const { toastSuccess, toastError } = useToast()
   const [confettiShown, setConfettiShown] = useState(false)
   const [wonGouda, setWonGouda] = useState(undefined)
-  const [wonJackpotNft, setJackpotNft] = useState(EMPTY_JACKPOT)
+  const [nfts, setNfts] = useState([])
   const [topWinners, setTopWinners] = useState([])
   const [topPlayers, setTopPlayers] = useState([])
   const [topWinnersWithBalance, setTopWinnersWithBalance] = useState([])
@@ -102,11 +99,19 @@ const LuckyDraw = () => {
       metadataCalls,
     }))
 
-    const jackpotNft = metadatas.filter(({ image, _type }) => _type.toNumber() === JACKPOT_TYPE && image !== '')
+    const result = metadatas.map(({ image, _type }, index) => {
+      try {
+        return {
+          image,
+          type: _type.toNumber(),
+          tokenId: tokenIds[index][0]
+        }
+      } catch (err) {
+        return undefined
+      }
+    }).filter(i => i)
 
-    const result = jackpotNft.length ? jackpotNft[0] : EMPTY_JACKPOT
-
-    setJackpotNft(result)
+    setNfts(result)
     return result
   }, [account, luckyDrawNFTContract, luckyDrawNFTAddress])
 
@@ -184,11 +189,41 @@ const LuckyDraw = () => {
     }
   }, [luckyDrawContract, luckyDrawNFTContract, account, setSpinLoading, toastError, toastSuccess])
 
+  const spinByMagicNft = useCallback(async (tokenId) => {
+    setSpinLoading(true)
+    const gasAmount = await luckyDrawContract.methods.spinBigJackpotByMagicNFT(tokenId)
+      .estimateGas({from: account, to: luckyDrawAddress})
+      // eslint-disable-next-line no-console
+      .catch(error => console.debug({
+        error,
+        method: 'estimateGas'
+      }))
+
+    await luckyDrawContract.methods
+      .spinBigJackpotByMagicNFT(tokenId)
+      .send({ from: account, gas: Math.floor(gasAmount * 1.3), to: luckyDrawAddress })
+      .on('transactionHash', (tx) => {
+        return tx.transactionHash
+      })
+    
+    const ntfs = await fetchNftJackpot()
+    setSpinLoading(false)
+    if (ntfs.find((item) => item.type === JACKPOT_TYPE)) {
+      setConfettiShown(true)
+      setTimeout(() => setConfettiShown(false), 5000)
+      return toastSuccess(
+        'Lucky Draw',
+        `Congratulations! You Won Big Jackpot`,
+      )
+    }
+    return toastError('Lucky Draw', 'Better luck next time!!!')
+  }, [luckyDrawContract, account, luckyDrawAddress, setSpinLoading, fetchNftJackpot, toastSuccess, toastError])
+
   const handleDraw = useCallback(async (type, times) => {
     try {
       setSpinLoading(true)
-      const isJackpotSpin = type === '0'
-      const args = type < 0 ? [times] : [type, times]
+      const isJackpotSpin = type === String(JACKPOT_TYPE)
+      const args = type === String(MAGIC_TYPE) ? [times] : [type, times]
       const gasAmount = await luckyDrawContract.methods.randoms(...args)
         .estimateGas({from: account, to: luckyDrawAddress})
         // eslint-disable-next-line no-console
@@ -223,8 +258,9 @@ const LuckyDraw = () => {
         )
       }
       if (isJackpotSpin) {
-        const respJackpotNft = await fetchNftJackpot()
-        if (wonJackpotNft.image === '' && respJackpotNft !== '') {
+        const ntfs = await fetchNftJackpot()
+        
+        if (ntfs.find((item) => item.type === JACKPOT_TYPE)) {
           setConfettiShown(true)
           setTimeout(() => setConfettiShown(false), 5000)
           return toastSuccess(
@@ -240,7 +276,7 @@ const LuckyDraw = () => {
       toastError('Lucky Draw', 'Please try again !')
       return setSpinLoading(false)
     }
-  }, [wonGouda, luckyDrawContract, account, luckyDrawAddress, setSpinLoading, toastSuccess, toastError, goudaContract, fetchNftJackpot, wonJackpotNft])
+  }, [wonGouda, luckyDrawContract, account, luckyDrawAddress, setSpinLoading, toastSuccess, toastError, goudaContract, fetchNftJackpot])
 
 
   return (
@@ -249,8 +285,8 @@ const LuckyDraw = () => {
         <Container>
           {confettiShown ? <Confetti /> : null}
           {isDesktop ? 
-            <Desktop claimJackpot={claimJackpot} wonJackpotNft={wonJackpotNft} typeRankings={typeRankings} handleTypeRankingsClick={handleTypeRankingsClick} topWinnersWithBalance={topWinnersWithBalance} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} /> :
-            <Mobile claimJackpot={claimJackpot} wonJackpotNft={wonJackpotNft} isMobile typeRankings={typeRankings} handleTypeRankingsClick={handleTypeRankingsClick} topWinnersWithBalance={topWinnersWithBalance} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
+            <Desktop nfts={nfts} spinByMagicNft={spinByMagicNft} claimJackpot={claimJackpot} typeRankings={typeRankings} handleTypeRankingsClick={handleTypeRankingsClick} topWinnersWithBalance={topWinnersWithBalance} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} /> :
+            <Mobile nfts={nfts} spinByMagicNft={spinByMagicNft} claimJackpot={claimJackpot} isMobile typeRankings={typeRankings} handleTypeRankingsClick={handleTypeRankingsClick} topWinnersWithBalance={topWinnersWithBalance} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
           }
         </Container>
       </SwiperProvider>

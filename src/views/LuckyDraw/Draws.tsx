@@ -35,7 +35,7 @@ const prizes = [
   },
   {
     label: 'Magic Gouda',
-    type: -1
+    type: 1
   },
   {
     label: '50 Gouda',
@@ -52,7 +52,7 @@ const prizes = [
 ]
 
 const factoryTime = {
-  '-1': 5,
+  '1': 5,
   '5': 1,
   '10': 1,
   '100': 2,
@@ -60,7 +60,7 @@ const factoryTime = {
   '500': 4,
 }
 
-const Draws = ({ handleDraw, spinLoading, account, goudaBalance, wonJackpotNft, claimJackpot }) => {
+const Draws = ({ handleDraw, spinLoading, account, goudaBalance, claimJackpot, nfts, spinByMagicNft }) => {
   const { setSwiper } = useSwiper()
   const initialIndex = Math.floor(prizes.length / 2)
   useOnNextRound()
@@ -76,7 +76,7 @@ const Draws = ({ handleDraw, spinLoading, account, goudaBalance, wonJackpotNft, 
         <Swiper
           initialSlide={initialIndex}
           onSwiper={setSwiper}
-          spaceBetween={20}
+          spaceBetween={10}
           effect='coverflow'
           coverflowEffect={{
             "rotate": 50,
@@ -100,7 +100,7 @@ const Draws = ({ handleDraw, spinLoading, account, goudaBalance, wonJackpotNft, 
             </SwiperSlide>
           ))}
           <SwiperSlide key={0}>
-            <BigJackpot claimJackpot={claimJackpot} wonJackpotNft={wonJackpotNft} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
+            <BigJackpot spinByMagicNft={spinByMagicNft} nfts={nfts} claimJackpot={claimJackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
           </SwiperSlide>
           {secondHalf.map((round) => (
             <SwiperSlide key={round.type}>

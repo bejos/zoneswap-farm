@@ -99,7 +99,7 @@ export const useLuckyDrawApprove = () => {
   return { onApprove: handleApprove, loading }
 }
 
-export const useLuckyDrawNFTApprove = (type) => {
+export const useLuckyDrawNFTApprove = (tokenId) => {
   const [loading, setLoading] = useState(false)
   const { account } = useWeb3React()
   const luckyDrawNFTContract = useLuckyDrawNFT(getLuckyDrawNFTAddress())
@@ -107,7 +107,6 @@ export const useLuckyDrawNFTApprove = (type) => {
   const handleApprove = useCallback(async () => {
     try {
       setLoading(true)
-      const tokenId = await luckyDrawNFTContract.methods.tokenOfOwnerByIndex(account, type).call()
       const tx = await luckyDrawNFTContract.methods.approve(getLuckyDrawAddress(), tokenId).send({ from: account })
       setLoading(false)
       return tx
@@ -115,7 +114,7 @@ export const useLuckyDrawNFTApprove = (type) => {
       setLoading(false)
       return false
     }
-  }, [account, luckyDrawNFTContract, type])
+  }, [account, luckyDrawNFTContract, tokenId])
 
   return { onApprove: handleApprove, loading }
 }

@@ -56,7 +56,7 @@ const RoundCard = ({ type, handleDraw, spinLoading, account, goudaBalance, gouda
       padding: 0
     }}>
       <Flex alignItems="center" justifyContent="space-between">
-        <img style={{ borderRadius: '12px 12px 0 0 '}} src={`/images/luckydraw/${type}.png`} alt="cowswap" />
+        <img style={{ borderRadius: '12px 12px 0 0 '}} src={`/images/luckydraw/${type}.jpg`} alt="cowswap" />
       </Flex>
     </CardHeader>
     <CardBody>

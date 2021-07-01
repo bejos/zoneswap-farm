@@ -1,11 +1,10 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import { Text, Button, AutoRenewIcon, Card, CardBody, CardHeader, Flex, Heading } from '@cowswap/uikit'
+import { Text, Button, AutoRenewIcon, Card, CardBody, CardHeader, Flex, Heading, Toggle } from '@cowswap/uikit'
 import { useLuckyDrawApprove, useLuckyDrawNFTApprove } from 'hooks/useApprove'
 import { useLuckyDrawAllowance, useLuckyDrawNFTAllowance } from 'hooks/useAllowance'
 import TicketIcon from './icons/Ticket'
 import SpinInput from './components/SpinInput'
-
 
 const CardBorder = styled.div`
   filter: blur(6px);
@@ -29,13 +28,93 @@ const CardOutter = styled(Card)`
 `
 
 const MAX_TIMES = 200
+const JACKPOT_TYPE = 0
+const MAGIC_TYPE = 1
 
-const Jackpot = ({ handleDraw, spinLoading, goudaBalance, wonJackpotNft, claimJackpot }) => {
+const JackpotNftAction = ({ jackpotNft, spinLoading, claimJackpot }) => {
+  const allowanceJackpotNft = useLuckyDrawNFTAllowance(jackpotNft.tokenId)
+  const { onApprove: onApproveJackpotNFT, loading: approvingJackpotNFT } = useLuckyDrawNFTApprove(jackpotNft ? jackpotNft.tokenId : -1)
+  return (
+    <div>
+      {allowanceJackpotNft ? (<>
+        <Heading color="#FFA600" size="lg">
+          You Won Big Jackpot
+        </Heading>
+        <Button
+          variant="subtle"
+          width="100%"
+          mt="15px"
+          isLoading={spinLoading}
+          disabled={spinLoading}
+          onClick={claimJackpot}
+          endIcon={spinLoading ? <AutoRenewIcon spin color="currentColor" /> : <TicketIcon color="currentColor" />}
+        >
+          Claim NFT
+        </Button>
+        </>) :
+      <>
+        <Heading color="#FFA600" size="lg">
+          You Won Big Jackpot
+        </Heading>
+        <Button variant="subtle" mt="15px" disabled={approvingJackpotNFT} width="100%" onClick={onApproveJackpotNFT} endIcon={approvingJackpotNFT ? <AutoRenewIcon spin color="currentColor" /> : null}>
+          {approvingJackpotNFT ? 'Approving ...' : 'Approve'}
+        </Button>
+      </>}
+    </div>
+  )
+}
+
+const MagicNftAction = ({ magicNft, spinLoading, handleDraw }) => {
+  const allowanceMagicNft = useLuckyDrawNFTAllowance(magicNft.tokenId)
+  const { onApprove: onApproveMagicNft, loading: approvingMagicNft } = useLuckyDrawNFTApprove(magicNft.tokenId)
+  const cardHeader = (
+    <div>
+      <Heading size="md" mb="15px">
+        Use Magic NFT
+      </Heading>
+      <Text color="textSubtle">
+        Token id: {magicNft.tokenId.toNumber()}
+      </Text>
+    </div>
+  )
+  return (
+    <div>
+      {allowanceMagicNft ? (<>
+        {cardHeader}
+        <Button
+          variant="subtle"
+          width="100%"
+          mt="15px"
+          isLoading={spinLoading}
+          disabled={spinLoading}
+          onClick={() => handleDraw(magicNft.tokenId)}
+          endIcon={spinLoading ? <AutoRenewIcon spin color="currentColor" /> : <TicketIcon color="currentColor" />}
+        >
+          Spin
+        </Button>
+        </>) :
+      <>
+        {cardHeader}
+        <Button variant="subtle" mt="15px" disabled={approvingMagicNft} width="100%" onClick={onApproveMagicNft} endIcon={approvingMagicNft ? <AutoRenewIcon spin color="currentColor" /> : null}>
+          {approvingMagicNft ? 'Approving ...' : 'Approve'}
+        </Button>
+      </>}
+    </div>
+  )
+}
+
+const Jackpot = ({ handleDraw, spinLoading, goudaBalance, claimJackpot, nfts, spinByMagicNft }) => {
+  const magicNft = nfts.find(({ type }) => type === MAGIC_TYPE)
+  const jackpotNft = nfts.find(({ type }) => type === JACKPOT_TYPE)
   const [jackpotTimes, setJackpotTimes] = useState('0')
+  const [magicPayment, setMagicPayment] = useState(false)
   const allowance = useLuckyDrawAllowance()
-  const allowanceNFT = useLuckyDrawNFTAllowance(0)
   const { onApprove, loading: approving } = useLuckyDrawApprove()
-  const { onApprove: onApproveNFT, loading: approvingNFT } = useLuckyDrawNFTApprove(0)
+
+  useEffect(() => {
+    setMagicPayment(Boolean(magicNft))
+  }, [magicNft])
+
   const handleChangeJackpot = (e: React.FormEvent<HTMLInputElement>) => {
     const { value: inputValue } = e.currentTarget
     setJackpotTimes(inputValue.replace(/[^0-9,]+/g, ''))
@@ -50,38 +129,14 @@ const Jackpot = ({ handleDraw, spinLoading, goudaBalance, wonJackpotNft, claimJa
   const outOfMax = Number(jackpotTimes) > MAX_TIMES
 
   const renderAction = () => {
-    if (wonJackpotNft.image !== '') {
-      return (
-        <CardBody>
-          {allowanceNFT ? (<>
-            <Heading color="#FFA600" size="lg">
-              You Won Big Jackpot
-            </Heading>
-            <Button
-              variant="subtle"
-              width="100%"
-              mt="15px"
-              isLoading={spinLoading}
-              disabled={spinLoading}
-              onClick={claimJackpot}
-              endIcon={spinLoading ? <AutoRenewIcon spin color="currentColor" /> : <TicketIcon color="currentColor" />}
-            >
-              Claim NFT
-            </Button>
-            </>) :
-          <>
-            <Heading color="#FFA600" size="lg">
-              You Won Big Jackpot
-            </Heading>
-            <Button variant="subtle" mt="15px" disabled={approvingNFT} width="100%" onClick={onApproveNFT} endIcon={approvingNFT ? <AutoRenewIcon spin color="currentColor" /> : null}>
-              {approvingNFT ? 'Approving ...' : 'Approve'}
-            </Button>
-          </>}
-        </CardBody>
-      )
+    if (jackpotNft) {
+      return (<JackpotNftAction jackpotNft={jackpotNft} spinLoading={spinLoading} claimJackpot={claimJackpot} />)
+    }
+    if (magicPayment && magicNft) {
+      return <MagicNftAction magicNft={magicNft} spinLoading={spinLoading} handleDraw={spinByMagicNft} />
     }
     return (
-      <CardBody>
+      <div>
         {allowance.toNumber() ? (<>
           <SpinInput
             onSelectMax={handleSelectMaxJackpot}
@@ -109,7 +164,7 @@ const Jackpot = ({ handleDraw, spinLoading, goudaBalance, wonJackpotNft, claimJa
         <Button variant="subtle" mt="15px" disabled={approving} width="100%" onClick={onApprove} endIcon={approving ? <AutoRenewIcon spin color="currentColor" /> : null}>
           {approving ? 'Approving ...' : 'Approve'}
         </Button>}
-      </CardBody>
+      </div>
     )
   }
 
@@ -121,10 +176,19 @@ const Jackpot = ({ handleDraw, spinLoading, goudaBalance, wonJackpotNft, claimJa
         padding: 0
       }}>
         <Flex alignItems="center" justifyContent="space-between">
-          <img style={{ borderRadius: '12px 12px 0 0 '}} src='/images/luckydraw/jackpot.png' alt="cowswap" />
+          <img style={{ borderRadius: '12px 12px 0 0 '}} src='/images/luckydraw/jackpot.jpg' alt="cowswap" />
         </Flex>
       </CardHeader>
-      {renderAction()}
+      <CardBody>
+        {magicNft ?
+          <Flex flexDirection="row-reverse" mb="15px" alignContent="center">
+            <Toggle background-color="#323063" scale="sm" checked={magicPayment} onChange={() => setMagicPayment((prev) => !prev)} />
+            <Text fontSize="14px" mr="5px">Magic NFT paid</Text>
+          </Flex> :
+          null
+        }
+        {renderAction()}
+      </CardBody>
     </CardOutter>
   )
 }
