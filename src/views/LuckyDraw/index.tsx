@@ -222,8 +222,8 @@ const LuckyDraw = () => {
   const handleDraw = useCallback(async (type, times) => {
     try {
       setSpinLoading(true)
-      const isJackpotSpin = type === String(JACKPOT_TYPE)
-      const args = type === String(MAGIC_TYPE) ? [times] : [type, times]
+      const isJackpotSpin = String(type) === String(JACKPOT_TYPE)
+      const args = String(type) === String(MAGIC_TYPE) ? [times] : [type, times]
       const gasAmount = await luckyDrawContract.methods.randoms(...args)
         .estimateGas({from: account, to: luckyDrawAddress})
         // eslint-disable-next-line no-console

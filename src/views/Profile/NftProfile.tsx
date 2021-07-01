@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import BigNumber from 'bignumber.js';
 import { useWeb3React } from '@web3-react/core'
-import { Card, BaseLayout, CardBody } from '@cowswap/uikit'
+import { Card, CardBody, Heading, Box, Text } from '@cowswap/uikit'
+import { NFT_URI } from 'config'
 import { getLuckyDrawNFTContract } from 'utils/contractHelpers'
 import multicall from 'utils/multicall'
 import { getLuckyDrawNFTAddress } from 'utils/addressHelpers'
@@ -9,31 +10,42 @@ import styled from 'styled-components'
 import useWeb3 from 'hooks/useWeb3'
 import { useBlock } from 'state/hooks'
 import luckyDrawNftAbi from 'config/abi/luckyDrawNFT.json'
+import SwiperCore, { Mousewheel } from 'swiper'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import 'swiper/swiper.min.css'
 
+SwiperCore.use([Mousewheel])
 
-const Cards = styled(BaseLayout)`
-  align-items: stretch;
-  justify-content: stretch;
-  margin-bottom: 32px;
-
-  & > div {
-    grid-column: span 6;
-    width: 100%;
+const StyledSwiper = styled.div`
+  .swiper-wrapper {
+    align-items: center;
+    display: flex;
+    padding: 15px 0;
   }
 
-  ${({ theme }) => theme.mediaQueries.sm} {
-    & > div {
-      grid-column: span 8;
-    }
-  }
-
-  ${({ theme }) => theme.mediaQueries.lg} {
-    & > div {
-      grid-column: span 3;
-    }
+  .swiper-slide {
+    width: 320px;
   }
 `
 
+const StyledCard = styled(Card)`
+  overflow: unset;
+  position: relative;
+  padding: 0;
+  box-sizing: border-box;
+  background-clip: padding-box; /* !importanté */
+  border: solid 5px transparent; /* !importanté */
+  border-radius: 16px;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    z-index: -1;
+    margin: -5px; /* !importanté */
+    border-radius: inherit; /* !importanté */
+    background: linear-gradient(to right,#1fc7d466,#ed4b9e73);
+`
 
 const NftProfile = () => {
   const [nfts, setNfts] = useState([])
@@ -80,26 +92,54 @@ const NftProfile = () => {
       method: 'metadatas',
       metadataCalls,
     }))
-    setNfts(metadatas)
+    
+    setNfts(metadatas
+      .map(({ image, _type }, index) => {
+        return {
+          image: `${NFT_URI}/${image}`,
+          tokenId: tokenIds[index][0].toNumber(),
+          _type
+        }
+      })
+      .filter(({ _type }) => {
+      return _type.toNumber() !== 1
+      })
+    )
 
     return metadatas
   }, [account, luckyDrawNFTContract, luckyDrawNFTAddress])
-
   useEffect(() => {
     fetchNftJackpot()
   }, [fetchNftJackpot, currentBlock])
 
   return (
-    <Cards>
-      {nfts.map(({ image }, index) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <Card key={image + index}>
-          <CardBody>
-            <img src={image} alt="cow-nft" />
-          </CardBody>
-        </Card>
-      ))}
-    </Cards>
+    <>
+      <Heading size="lg" mb="15px">My gallery ({nfts.length} nfts)</Heading>
+      <Box overflowX="hidden" overflowY="auto">
+        <StyledSwiper>
+          <Swiper
+            spaceBetween={30}
+            slidesPerView="auto"
+            mousewheel
+            pagination={{
+              "clickable": true
+            }}
+            className="mySwiper"
+          >
+            {nfts.map(({ image, tokenId }) => (
+              <SwiperSlide key={image}>
+                <StyledCard>
+                  <CardBody>
+                  <img src={image} alt="cow-nft" />
+                  <Text mt="15px">Token ID: {tokenId}</Text>
+                  </CardBody>
+                </StyledCard>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </StyledSwiper>
+      </Box>
+    </>
   )
 }
 
