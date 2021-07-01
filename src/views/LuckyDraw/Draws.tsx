@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import SwiperCore, { Keyboard, Mousewheel, EffectCoverflow } from 'swiper'
+import SwiperCore, { Mousewheel, EffectCoverflow } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Box } from '@cowswap/uikit'
 import 'swiper/swiper.min.css'
@@ -10,7 +10,7 @@ import RoundCard from './components/RoundCard'
 import useSwiper from './hooks/useSwiper'
 import useOnNextRound from './hooks/useOnNextRound'
 
-SwiperCore.use([Keyboard, Mousewheel, EffectCoverflow])
+SwiperCore.use([Mousewheel, EffectCoverflow])
 
 const StyledSwiper = styled.div`
   .swiper-wrapper {
@@ -76,7 +76,7 @@ const Draws = ({ handleDraw, spinLoading, account, goudaBalance, claimJackpot, n
         <Swiper
           initialSlide={initialIndex}
           onSwiper={setSwiper}
-          spaceBetween={10}
+          spaceBetween={0}
           effect='coverflow'
           coverflowEffect={{
             "rotate": 50,
@@ -87,12 +87,9 @@ const Draws = ({ handleDraw, spinLoading, account, goudaBalance, claimJackpot, n
           }}
           loop
           slidesPerView="auto"
-          freeMode
           freeModeSticky
           centeredSlides
           mousewheel
-          keyboard
-          resizeObserver
         >
           {firstHalf.map((round) => (
             <SwiperSlide key={round.type}>
