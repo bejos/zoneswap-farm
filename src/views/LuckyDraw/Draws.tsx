@@ -60,7 +60,42 @@ const factoryTime = {
   '500': 4,
 }
 
-const Draws = ({ handleDraw, spinLoading, account, goudaBalance, claimJackpot, nfts, spinByMagicNft }) => {
+const SwiperWeb = ({ children, setSwiper, initialIndex }) => (
+  <Swiper
+    initialSlide={initialIndex}
+    onSwiper={setSwiper}
+    spaceBetween={0}
+    effect='coverflow'
+    coverflowEffect={{
+      "rotate": 50,
+      "stretch": 0,
+      "depth": 100,
+      "modifier": 1,
+      "slideShadows": true
+    }}
+    loop
+    slidesPerView="auto"
+    freeModeSticky
+    centeredSlides
+    mousewheel
+  >
+    {children}
+  </Swiper>)
+
+const SwiperMobile = ({ children, setSwiper, initialIndex }) => (
+  <Swiper
+    initialSlide={initialIndex}
+    onSwiper={setSwiper}
+    spaceBetween={15}
+    loop
+    slidesPerView="auto"
+    freeModeSticky
+    centeredSlides
+  >
+    {children}
+  </Swiper>)
+
+const Draws = ({ handleDraw, spinLoading, account, goudaBalance, claimJackpot, nfts, spinByMagicNft, isMobile }) => {
   const { setSwiper } = useSwiper()
   const initialIndex = Math.floor(prizes.length / 2)
   useOnNextRound()
@@ -70,26 +105,15 @@ const Draws = ({ handleDraw, spinLoading, account, goudaBalance, claimJackpot, n
   const firstHalf = prizes.slice(0, half)
   const secondHalf = prizes.slice(-half)
 
+  const SwiperComponent = isMobile ? SwiperMobile : SwiperWeb
+
   return (
     <Box overflowX="hidden" overflowY="auto">
       <StyledSwiper>
-        <Swiper
-          initialSlide={initialIndex}
-          onSwiper={setSwiper}
-          spaceBetween={0}
-          effect='coverflow'
-          coverflowEffect={{
-            "rotate": 50,
-            "stretch": 0,
-            "depth": 100,
-            "modifier": 1,
-            "slideShadows": true
-          }}
-          loop
-          slidesPerView="auto"
-          freeModeSticky
-          centeredSlides
-          mousewheel
+        
+        <SwiperComponent
+          setSwiper={setSwiper}
+          initialIndex={initialIndex}
         >
           {firstHalf.map((round) => (
             <SwiperSlide key={round.type}>
@@ -104,7 +128,7 @@ const Draws = ({ handleDraw, spinLoading, account, goudaBalance, claimJackpot, n
               <RoundCard type={round.type} handleDraw={handleDraw} spinLoading={spinLoading} account={account} goudaBalance={goudaBalance} goudaPerTime={factoryTime[round.type]} />
             </SwiperSlide>
           ))}
-        </Swiper>
+        </SwiperComponent>
       </StyledSwiper>
     </Box>
   )

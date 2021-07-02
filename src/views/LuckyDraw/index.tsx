@@ -201,7 +201,7 @@ const LuckyDraw = () => {
 
     await luckyDrawContract.methods
       .spinBigJackpotByMagicNFT(tokenId)
-      .send({ from: account, gas: Math.floor(gasAmount * 1.3), to: luckyDrawAddress })
+      .send({ from: account, gas: Math.floor(gasAmount * 1.2), to: luckyDrawAddress })
       .on('transactionHash', (tx) => {
         return tx.transactionHash
       })
@@ -234,7 +234,7 @@ const LuckyDraw = () => {
 
       await luckyDrawContract.methods
         .randoms(...args)
-        .send({ from: account, gas: Math.floor(gasAmount * 1.3), to: luckyDrawAddress })
+        .send({ from: account, gas: Math.floor(gasAmount * 1.2), to: luckyDrawAddress })
         .on('transactionHash', (tx) => {
           return tx.transactionHash
         })

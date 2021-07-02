@@ -31,7 +31,7 @@ const LuckyDraw = ({ claimJackpot, handleDraw, goudaBalance, spinLoading, accoun
         <Box height="100%" overflow="hidden" position="relative">
           <View isVisible={activeIndex === 0}>
             <Flex alignItems="center" height="100%">
-              <Draws spinByMagicNft={spinByMagicNft}  nfts={nfts} claimJackpot={claimJackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
+              <Draws isMobile={false} spinByMagicNft={spinByMagicNft}  nfts={nfts} claimJackpot={claimJackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
             </Flex>
           </View>
           <View isVisible={activeIndex === 1}>
