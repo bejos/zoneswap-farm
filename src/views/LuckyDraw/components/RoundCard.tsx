@@ -8,7 +8,7 @@ import { useLuckyDrawAllowance } from 'hooks/useAllowance'
 import TicketIcon from '../icons/Ticket'
 import SpinInput from './SpinInput'
 
-const MAX_TIMES = 200
+const MAX_TIMES = 100
 
 const CardBorder = styled.div`
   filter: blur(6px);

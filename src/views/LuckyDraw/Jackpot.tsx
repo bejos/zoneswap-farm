@@ -27,7 +27,7 @@ const CardOutter = styled(Card)`
   overflow: inherit;
 `
 
-const MAX_TIMES = 200
+const MAX_TIMES = 100
 const JACKPOT_TYPE = 0
 const MAGIC_TYPE = 1
 
