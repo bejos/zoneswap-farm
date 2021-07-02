@@ -240,14 +240,13 @@ const LuckyDraw = () => {
         })
 
       const [, resWon] = await luckyDrawContract.methods.getUser(account).call()
-      setSpinLoading(false)
       const wonThisRound = new BigNumber(resWon - wonGouda).div(DEFAULT_TOKEN_DECIMAL)
       
-      goudaContract.methods.balanceOf(account).call()
-        .then(balance => {
-          setGoudaBalance(new BigNumber(balance).div(DEFAULT_TOKEN_DECIMAL))
-        })
-        
+      const resGoudaBalance = await goudaContract.methods.balanceOf(account).call()
+      setGoudaBalance(new BigNumber(resGoudaBalance).div(DEFAULT_TOKEN_DECIMAL))
+      
+      setSpinLoading(false)
+
       if (!isJackpotSpin && resWon > wonGouda) {
         setWonGouda(resWon)
         setConfettiShown(true)
