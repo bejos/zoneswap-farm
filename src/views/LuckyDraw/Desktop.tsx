@@ -2,9 +2,16 @@ import React, { useState } from 'react'
 import { Flex, Box } from '@cowswap/uikit'
 import styled from 'styled-components'
 import MobileMenu from './components/MobileMenu'
+import Menu from './components/Menu'
 import Rankings from './Rankings'
 import Draws from './Draws'
 import BigJackpot from './Jackpot'
+
+const PositionsPane = styled.div`
+  align-items: center;
+  display: flex;
+  min-height: 50px;
+`
 
 const StyledDesktop = styled.div`
   display: flex;
@@ -30,7 +37,10 @@ const LuckyDraw = ({ claimJackpot, handleDraw, goudaBalance, spinLoading, accoun
       <StyledDesktop>
         <Box height="100%" overflow="hidden" position="relative">
           <View isVisible={activeIndex === 0}>
-            <Flex alignItems="center" height="100%">
+            <Flex flexDirection="column" justifyContent="center" alignItems="center" height="100%">
+              <PositionsPane>
+                <Menu />
+              </PositionsPane>
               <Draws isMobile={false} spinByMagicNft={spinByMagicNft}  nfts={nfts} claimJackpot={claimJackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
             </Flex>
           </View>

@@ -76,11 +76,14 @@ const LuckyDraw = () => {
       params: [account, index],
     }))
 
-    // eslint-disable-next-line no-console
-    const tokenIds = await multicall(luckyDrawNftAbi, tokenIdCalls).catch(error => console.debug({
-      error,
-      method: 'tokenOfOwnerByIndex'
-    }))
+    const tokenIds = await multicall(luckyDrawNftAbi, tokenIdCalls).catch(error => {
+       // eslint-disable-next-line no-console
+      console.debug({
+        error,
+        method: 'tokenOfOwnerByIndex'
+      })
+      return []
+    })
 
     if (!tokenIds) {
       return {}
@@ -92,12 +95,15 @@ const LuckyDraw = () => {
       params: [new BigNumber(tokenId).toNumber()],
     }))
 
-    // eslint-disable-next-line no-console
-    const metadatas = await multicall(luckyDrawNftAbi, metadataCalls).catch(error => console.debug({
-      error,
-      method: 'metadatas',
-      metadataCalls,
-    }))
+    const metadatas = await multicall(luckyDrawNftAbi, metadataCalls).catch(error => {
+       // eslint-disable-next-line no-console
+      console.debug({
+        error,
+        method: 'metadatas',
+        metadataCalls,
+      })
+      return []
+    })
 
     const result = metadatas.map(({ image, _type }, index) => {
       try {
@@ -107,7 +113,7 @@ const LuckyDraw = () => {
           tokenId: tokenIds[index][0]
         }
       } catch (err) {
-        return undefined
+        return []
       }
     }).filter(i => i)
 
@@ -243,6 +249,7 @@ const LuckyDraw = () => {
       const wonThisRound = new BigNumber(resWon - wonGouda).div(DEFAULT_TOKEN_DECIMAL)
       
       const resGoudaBalance = await goudaContract.methods.balanceOf(account).call()
+
       setGoudaBalance(new BigNumber(resGoudaBalance).div(DEFAULT_TOKEN_DECIMAL))
       
       setSpinLoading(false)

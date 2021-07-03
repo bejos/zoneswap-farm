@@ -28,25 +28,6 @@ const StyledSwiper = styled.div`
   }
 `
 
-const StyledCard = styled(Card)`
-  overflow: unset;
-  position: relative;
-  padding: 0;
-  box-sizing: border-box;
-  background-clip: padding-box; /* !importanté */
-  border: solid 5px transparent; /* !importanté */
-  border-radius: 16px;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0; right: 0; bottom: 0; left: 0;
-    z-index: -1;
-    margin: -5px; /* !importanté */
-    border-radius: inherit; /* !importanté */
-    background: linear-gradient(to right,#1fc7d466,#ed4b9e73);
-`
-
 const NftProfile = () => {
   const [nfts, setNfts] = useState([])
   const { currentBlock } = useBlock()
@@ -118,7 +99,7 @@ const NftProfile = () => {
       <Box overflowX="hidden" overflowY="auto">
         <StyledSwiper>
           <Swiper
-            spaceBetween={30}
+            spaceBetween={15}
             slidesPerView="auto"
             mousewheel
             pagination={{
@@ -127,13 +108,13 @@ const NftProfile = () => {
             className="mySwiper"
           >
             {nfts.map(({ image, tokenId }) => (
-              <SwiperSlide key={image}>
-                <StyledCard>
+              <SwiperSlide key={tokenId}>
+                <Card isSuccess>
                   <CardBody>
                   <img src={image} alt="cow-nft" />
                   <Text mt="15px">Token ID: {tokenId}</Text>
                   </CardBody>
-                </StyledCard>
+                </Card>
               </SwiperSlide>
             ))}
           </Swiper>
