@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import BigNumber from 'bignumber.js';
 import { useWeb3React } from '@web3-react/core'
-import { Card, CardBody, Heading, Box, Text } from '@cowswap/uikit'
-import { NFT_URI } from 'config'
+import { Card, CardBody, Heading, Text, CardRibbon, LinkExternal } from '@cowswap/uikit'
+import { NFT_URI, BASE_BSC_SCAN_URL } from 'config'
 import { getLuckyDrawNFTContract } from 'utils/contractHelpers'
 import multicall from 'utils/multicall'
 import { getLuckyDrawNFTAddress } from 'utils/addressHelpers'
@@ -10,26 +10,45 @@ import styled from 'styled-components'
 import useWeb3 from 'hooks/useWeb3'
 import { useBlock } from 'state/hooks'
 import luckyDrawNftAbi from 'config/abi/luckyDrawNFT.json'
-import SwiperCore, { Mousewheel } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import 'swiper/swiper.min.css'
 
-SwiperCore.use([Mousewheel])
-
-const StyledSwiper = styled.div`
-  .swiper-wrapper {
-    align-items: center;
-    display: flex;
-    padding: 15px 0;
-  }
-
-  .swiper-slide {
-    width: 320px;
+const FlexLayout = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  & > * {
+    min-width: 180px;
+    max-width: 29.8%;
+    width: 100%;
+    margin: 0 8px;
+    margin-bottom: 32px;
   }
 `
 
+const CardStyled = styled(Card)`
+  position: relative;
+  :hover {
+    .details {
+      visibility: visible;
+      opacity: 0.9;
+    }
+  }
+`
+
+const FlexCardDetails = styled.div`
+  position: absolute;
+  background: white;
+  bottom: 0;
+  padding: 18px;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s linear;
+`
+
+const MAGIC_TYPE = 1
+
 const NftProfile = () => {
-  const [nfts, setNfts] = useState([])
+  const [nfts, setNfts] = useState({})
+  const [metas, setMetas] = useState([])
   const { currentBlock } = useBlock()
   const { account } = useWeb3React()
   const web3 = useWeb3()
@@ -67,59 +86,67 @@ const NftProfile = () => {
       params: [new BigNumber(tokenId).toNumber()],
     }))
 
-    // eslint-disable-next-line no-console
-    const metadatas = await multicall(luckyDrawNftAbi, metadataCalls).catch(error => console.debug({
-      error,
-      method: 'metadatas',
-      metadataCalls,
-    }))
-    
-    setNfts(metadatas
-      .map(({ image, _type }, index) => {
-        return {
-          image: `${NFT_URI}/${image}`,
-          tokenId: tokenIds[index][0].toNumber(),
-          _type
-        }
+    const metadatas = await multicall(luckyDrawNftAbi, metadataCalls).catch(error => {
+      // eslint-disable-next-line no-console
+      console.debug({
+        error,
+        method: 'metadatas',
+        metadataCalls,
       })
-      .filter(({ _type }) => {
-      return _type.toNumber() !== 1
-      })
-    )
+      return []
+    })
+
+    setMetas(metadatas)
 
     return metadatas
   }, [account, luckyDrawNFTContract, luckyDrawNFTAddress])
+
+  useEffect(() => {
+    const nftsByType = {}
+    metas.forEach(item => {
+      const { image, _type, author, name, description } = item
+      const type = _type.toNumber()
+      if (type === MAGIC_TYPE) {
+        return
+      }
+      const isExistedType = Boolean(nftsByType[type])
+      if (isExistedType) {
+        nftsByType[type].count ++
+        return
+      }
+      nftsByType[type] = {
+        image: `${NFT_URI}/${image}`,
+        author, name, description,
+        count: 1
+      }
+    })
+    setNfts(nftsByType)
+  }, [metas])
+
   useEffect(() => {
     fetchNftJackpot()
   }, [fetchNftJackpot, currentBlock])
 
   return (
     <>
-      <Heading size="lg" mb="15px">My gallery ({nfts.length} nfts)</Heading>
-      <Box overflowX="hidden" overflowY="auto">
-        <StyledSwiper>
-          <Swiper
-            spaceBetween={15}
-            slidesPerView="auto"
-            mousewheel
-            pagination={{
-              "clickable": true
-            }}
-            className="mySwiper"
-          >
-            {nfts.map(({ image, tokenId }) => (
-              <SwiperSlide key={tokenId}>
-                <Card isSuccess>
-                  <CardBody>
-                  <img src={image} alt="cow-nft" />
-                  <Text mt="15px">Token ID: {tokenId}</Text>
-                  </CardBody>
-                </Card>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </StyledSwiper>
-      </Box>
+      <Heading size="lg" mb="15px">My gallery ({metas.length} nfts)</Heading>
+      <FlexLayout>
+        {Object.keys(nfts).map((type) => {
+          const { image, name, author, description, count } = nfts[type]
+          return (
+            <CardStyled key={image} p="0px" ribbon={<CardRibbon variantColor="success" text={name} />}>
+              <CardBody p="0px">
+                <img width="100%" src={image} alt="cow-nft" />
+              </CardBody>
+              <FlexCardDetails className="details">
+                <LinkExternal href={`${BASE_BSC_SCAN_URL}/address/${author}`}>Author address</LinkExternal>
+                <Text mt="15px">Amount: {count}</Text>
+                <Text mt="15px" color="textSubtle">Description: {description}</Text>
+              </FlexCardDetails>
+            </CardStyled>
+          )
+        })}
+      </FlexLayout>
     </>
   )
 }
