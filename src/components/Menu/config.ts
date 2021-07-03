@@ -19,7 +19,7 @@ const config: MenuEntry[] = [
     icon: 'LuckyDrawIcon',
     href: '/luckydraw',
     status: {
-      text: "LIVE",
+      text: "BETA",
       color: "failure",
     }
   },
