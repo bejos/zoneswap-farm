@@ -19,7 +19,7 @@ const HelpButtonWrapper = styled.div`
 
 const Menu = () => {
   return (
-    <FlexRow alignItems="center" p="16px">
+    <FlexRow alignItems="center" p="16px" mb="16px">
       <FlexRow justifyContent="center">
         <PrevNextNav />
       </FlexRow>
