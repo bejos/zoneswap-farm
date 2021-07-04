@@ -70,7 +70,8 @@ const Rankings = ({ topWinnersWithBalance, isMobile, handleTypeRankingsClick, ty
           </div>
         </FlexColumn>
         {topWinnersWithBalance.map((winner, index) => (
-          <FlexAddressColumn key={winner.address} style={{ justifyContent: "space-between" }}>
+          // eslint-disable-next-line react/no-array-index-key
+          <FlexAddressColumn key={winner.address + index} style={{ justifyContent: "space-between" }}>
             <div className="ranking"><Text fontSize={factoryFontPrize[index] || "16px"} color={factoryColorPrize[index] || "textSubtle"}>{index + 1}</Text></div>
             <div className="address"><Text fontSize={factoryFontPrize[index] || "16px"}  color={factoryColorPrize[index] || "textSubtle"}><a rel="noreferrer" target="_blank" href={`${BASE_BSC_SCAN_URL}/address/${winner.address}`}>{winner.address.substring(0, 11)}...{winner.address.slice(-4)}</a></Text></div>
             <div className="balance"><Text fontSize={factoryFontPrize[index] || "16px"} color={factoryColorPrize[index] || "textSubtle"}>{winner.won}</Text></div>
