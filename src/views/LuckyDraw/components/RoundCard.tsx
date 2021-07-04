@@ -9,6 +9,8 @@ import TicketIcon from '../icons/Ticket'
 import SpinInput from './SpinInput'
 
 const MAX_TIMES = 100
+const MAGIC_MAX_TIMES = 50
+const MAGIC_TYPE = 1
 
 const CardBorder = styled.div`
   filter: blur(6px);
@@ -32,6 +34,7 @@ const CardOutter = styled(Card)`
 `
 
 const RoundCard = ({ type, handleDraw, spinLoading, account, goudaBalance, goudaPerTime }) => {
+  const maxTimes = type === MAGIC_TYPE ? MAGIC_MAX_TIMES : MAX_TIMES
   const [times, setTimes] = useState('0')
   const allowance = useLuckyDrawAllowance()
   const { onApprove, loading: approving } = useLuckyDrawApprove()
@@ -43,10 +46,10 @@ const RoundCard = ({ type, handleDraw, spinLoading, account, goudaBalance, gouda
 
   const handleSelectMax = useCallback(() => {
     const estimatedTimes = Math.floor(goudaBalance.toNumber() / goudaPerTime)
-    setTimes((estimatedTimes > MAX_TIMES ? MAX_TIMES : estimatedTimes).toString())
-  }, [goudaBalance, setTimes, goudaPerTime])
+    setTimes((estimatedTimes > maxTimes ? maxTimes : estimatedTimes).toString())
+  }, [goudaBalance, setTimes, goudaPerTime, maxTimes])
 
-  const outOfMax = Number(times) > MAX_TIMES
+  const outOfMax = Number(times) > maxTimes
   const disabled = Number(times) < 1
 
   return <CardOutter key={type}>
@@ -83,7 +86,7 @@ const RoundCard = ({ type, handleDraw, spinLoading, account, goudaBalance, gouda
         onClick={() => handleDraw(type, times)}
         endIcon={spinLoading ? <AutoRenewIcon spin color="currentColor" /> : <TicketIcon color="currentColor" />}
       >
-        {outOfMax ? `Out of maximum (${MAX_TIMES})` : 'Spin'}
+        {outOfMax ? `Out of maximum (${maxTimes})` : 'Spin'}
       </Button>
       </> :
       <Button

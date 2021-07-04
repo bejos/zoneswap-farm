@@ -198,7 +198,7 @@ const LuckyDraw = () => {
   const spinByMagicNft = useCallback(async (tokenId) => {
     setSpinLoading(true)
     const gasAmount = await luckyDrawContract.methods.spinBigJackpotByMagicNFT(tokenId)
-      .estimateGas({from: account, to: luckyDrawAddress})
+      .estimateGas({from: account, tokenId})
       // eslint-disable-next-line no-console
       .catch(error => console.debug({
         error,
@@ -207,7 +207,7 @@ const LuckyDraw = () => {
 
     await luckyDrawContract.methods
       .spinBigJackpotByMagicNFT(tokenId)
-      .send({ from: account, gas: Math.floor(gasAmount * 1.3), to: luckyDrawAddress })
+      .send({ from: account, gas: Math.floor(gasAmount * 1.1), to: luckyDrawAddress })
       .on('transactionHash', (tx) => {
         return tx.transactionHash
       })
@@ -225,22 +225,29 @@ const LuckyDraw = () => {
     return toastError('Lucky Draw', 'Better luck next time!!!')
   }, [luckyDrawContract, account, luckyDrawAddress, setSpinLoading, fetchNftJackpot, toastSuccess, toastError])
 
-  const handleDraw = useCallback(async (type, times) => {
+  const handleDraw = useCallback(async (type, xtimes) => {
     try {
       setSpinLoading(true)
+      const times = Number(xtimes)
       const isJackpotSpin = String(type) === String(JACKPOT_TYPE)
       const args = String(type) === String(MAGIC_TYPE) ? [times] : [type, times]
       const gasAmount = await luckyDrawContract.methods.randoms(...args)
-        .estimateGas({from: account, to: luckyDrawAddress})
+        .estimateGas({from: account, ...args})
         // eslint-disable-next-line no-console
         .catch(error => console.debug({
           error,
           method: 'estimateGas'
         }))
 
+      // eslint-disable-next-line no-console
+      console.debug({
+        args,
+        gasAmount
+      })
+
       await luckyDrawContract.methods
         .randoms(...args)
-        .send({ from: account, gas: Math.floor(gasAmount * 1.3), to: luckyDrawAddress })
+        .send({ from: account, gas: Math.floor(gasAmount * 1.2), to: luckyDrawAddress })
         .on('transactionHash', (tx) => {
           return tx.transactionHash
         })
