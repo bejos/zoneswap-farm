@@ -103,7 +103,7 @@ const MagicNftAction = ({ magicNft, spinLoading, handleDraw }) => {
   )
 }
 
-const Jackpot = ({ handleDraw, spinLoading, goudaBalance, claimJackpot, nfts, spinByMagicNft }) => {
+const Jackpot = ({ handleDraw, spinLoading, goudaBalance, claimJackpot, nfts, spinByMagicNft, bigJackpot }) => {
   const magicNft = nfts.find(({ type }) => type === MAGIC_TYPE)
   const jackpotNft = nfts.find(({ type }) => type === JACKPOT_TYPE)
   const [jackpotTimes, setJackpotTimes] = useState('0')
@@ -177,6 +177,13 @@ const Jackpot = ({ handleDraw, spinLoading, goudaBalance, claimJackpot, nfts, sp
       }}>
         <Flex alignItems="center" justifyContent="space-between">
           <img style={{ borderRadius: '12px 12px 0 0 '}} src='/images/luckydraw/jackpot.jpg' alt="cowswap" />
+          <div style={{
+            width: '100%',
+            position: 'absolute',
+            color: 'white',
+            left: 20,
+            top: 125
+          }}>Jackpot: {bigJackpot.toNumber()}</div>
         </Flex>
       </CardHeader>
       <CardBody>

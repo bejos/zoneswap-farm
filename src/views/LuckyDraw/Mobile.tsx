@@ -28,7 +28,7 @@ const View = styled.div<{ isVisible: boolean }>`
   visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
 `
 
-const Mobile = ({ claimJackpot, handleDraw, goudaBalance, spinLoading, account, topWinnersWithBalance, isMobile, typeRankings, handleTypeRankingsClick, nfts, spinByMagicNft }) => {
+const Mobile = ({ claimJackpot, handleDraw, goudaBalance, spinLoading, account, topWinnersWithBalance, isMobile, typeRankings, handleTypeRankingsClick, nfts, spinByMagicNft, bigJackpot }) => {
   const [activeIndex, setView] = useState(0)
 
   return (
@@ -36,12 +36,12 @@ const Mobile = ({ claimJackpot, handleDraw, goudaBalance, spinLoading, account, 
       <Box height="100%" overflow="hidden" position="relative">
         <View isVisible={activeIndex === 0}>
           <Flex alignItems="center" height="100%">
-            <Draws isMobile spinByMagicNft={spinByMagicNft}  nfts={nfts} claimJackpot={claimJackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
+            <Draws bigJackpot={bigJackpot} isMobile spinByMagicNft={spinByMagicNft}  nfts={nfts} claimJackpot={claimJackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
           </Flex>
         </View>
         <View isVisible={activeIndex === 1}>
           <Flex flexDirection="column" alignItems="center" height="100%" justifyContent="center">
-            <BigJackpot spinByMagicNft={spinByMagicNft}  nfts={nfts} claimJackpot={claimJackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
+            <BigJackpot bigJackpot={bigJackpot} spinByMagicNft={spinByMagicNft}  nfts={nfts} claimJackpot={claimJackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
           </Flex>
         </View>
         <View isVisible={activeIndex === 2}>

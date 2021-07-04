@@ -52,6 +52,7 @@ const LuckyDraw = () => {
   const [typeRankings, setTypeRankings] = useState(0);
   const [spinLoading, setSpinLoading] = useState(false)
   const [goudaBalance, setGoudaBalance] = useState(BIG_ZERO)
+  const [bigJackpot, setBigJackpot] = useState(BIG_ZERO)
 
   const luckyDrawAddress = getLuckyDrawAddress()
   const luckyDrawNFTAddress = getLuckyDrawNFTAddress()
@@ -124,6 +125,10 @@ const LuckyDraw = () => {
   useEffect(() => {
     try {
       if (account) {
+        luckyDrawContract.methods.bigJackpot().call()
+          .then(balance => {
+            setBigJackpot(new BigNumber(balance).div(DEFAULT_TOKEN_DECIMAL))
+          })
         luckyDrawContract.methods.getTop10Winner().call()
           .then(resp => {
             setTopWinners(resp)
@@ -298,8 +303,8 @@ const LuckyDraw = () => {
         <Container>
           {confettiShown ? <Confetti /> : null}
           {isDesktop ? 
-            <Desktop nfts={nfts} spinByMagicNft={spinByMagicNft} claimJackpot={claimJackpot} typeRankings={typeRankings} handleTypeRankingsClick={handleTypeRankingsClick} topWinnersWithBalance={topWinnersWithBalance} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} /> :
-            <Mobile nfts={nfts} spinByMagicNft={spinByMagicNft} claimJackpot={claimJackpot} isMobile typeRankings={typeRankings} handleTypeRankingsClick={handleTypeRankingsClick} topWinnersWithBalance={topWinnersWithBalance} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
+            <Desktop bigJackpot={bigJackpot} nfts={nfts} spinByMagicNft={spinByMagicNft} claimJackpot={claimJackpot} typeRankings={typeRankings} handleTypeRankingsClick={handleTypeRankingsClick} topWinnersWithBalance={topWinnersWithBalance} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} /> :
+            <Mobile bigJackpot={bigJackpot} nfts={nfts} spinByMagicNft={spinByMagicNft} claimJackpot={claimJackpot} isMobile typeRankings={typeRankings} handleTypeRankingsClick={handleTypeRankingsClick} topWinnersWithBalance={topWinnersWithBalance} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} account={account} />
           }
         </Container>
       </SwiperProvider>

@@ -95,7 +95,7 @@ const SwiperMobile = ({ children, setSwiper, initialIndex }) => (
     {children}
   </Swiper>)
 
-const Draws = ({ handleDraw, spinLoading, account, goudaBalance, claimJackpot, nfts, spinByMagicNft, isMobile }) => {
+const Draws = ({ handleDraw, spinLoading, account, goudaBalance, claimJackpot, nfts, spinByMagicNft, isMobile, bigJackpot }) => {
   const { setSwiper } = useSwiper()
   const initialIndex = Math.floor(prizes.length / 2)
   useOnNextRound()
@@ -121,7 +121,7 @@ const Draws = ({ handleDraw, spinLoading, account, goudaBalance, claimJackpot, n
             </SwiperSlide>
           ))}
           <SwiperSlide key={0}>
-            <BigJackpot spinByMagicNft={spinByMagicNft} nfts={nfts} claimJackpot={claimJackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
+            <BigJackpot bigJackpot={bigJackpot} spinByMagicNft={spinByMagicNft} nfts={nfts} claimJackpot={claimJackpot} handleDraw={handleDraw} goudaBalance={goudaBalance} spinLoading={spinLoading} />
           </SwiperSlide>
           {secondHalf.map((round) => (
             <SwiperSlide key={round.type}>

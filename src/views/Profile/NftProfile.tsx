@@ -25,6 +25,7 @@ const FlexLayout = styled.div`
 `
 
 const CardStyled = styled(Card)`
+  border-radius: 16px;
   position: relative;
   :hover {
     .details {
@@ -35,6 +36,7 @@ const CardStyled = styled(Card)`
 `
 
 const FlexCardDetails = styled.div`
+  width: 100%;
   position: absolute;
   background: white;
   bottom: 0;
